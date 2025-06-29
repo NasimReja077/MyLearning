@@ -1,0 +1,47 @@
+1. practic sql Qurey
+2. create a git hub repository ( clone , pull, push, commit, add, using cmd )
+3. functional part of HTTP request ( GET, POST, PUT, PATCH, DELETE )
+-------------
+1. practic sql Qurey 
+Q1. What is SQL ? 
+ANS : SQL is a standard language for storing, manipulating and retrieving data in databases.
+Q2. What is RDBMS ?
+Ans: 
+Q3. What is database and How to create a database using SQL Cmd ?
+Q4. What is table and How to create a table using SQL cmd ?
+Q5. What is Entity ?
+Q6. What is Column and Row ?
+
+
+Some of The Most Important SQL Commands
+SELECT - extracts data from a database
+UPDATE - updates data in a database
+DELETE - deletes data from a database
+INSERT INTO - inserts new data into a database
+CREATE DATABASE - creates a new database
+ALTER DATABASE - modifies a database
+CREATE TABLE - creates a new table
+ALTER TABLE - modifies a table
+DROP TABLE - deletes a table
+CREATE INDEX - creates an index (search key)
+DROP INDEX - deletes an index
+
+SQL Commands for create database: 
+CREATE DATABASE ECART;
+SQL Commands for to create table : 
+CREATE TABLE customer( ID INT, NAME VARCHAR(255), EMAIL VARCHAR(255), ADDRESS VARCHAR(255), MOBILE_NUMBER INT(10) );
+
+task 1- Writhe SQL commands for  how to add a new column , update an existing column and delete an existing column from an existing table 
+
+table = customer 
+
+table column = name, email, address, mobile_number 
+SELECT customer * FROM 
+SELECT * FROM customer WHERE NAME = "reja";
+SELECT * FROM customer WHERE ID = 1;
+SELECT NAME FROM customer WHERE ID = 1;
+$ git clone https://github.com/NasimReja077/MyLearning.git
+
+
+------------------
+CREATE DATABASE ECART;
