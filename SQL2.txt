@@ -1,0 +1,176 @@
+Q1. Create a new database
+ans: CREATE DATABASE SCHOOL;
+
+Q2. Display all databases
+SHOW DATABASES;
+
+Q3. Switch database.
+USE school;
+
+Q4. Drop a database
+DROP DATABASE test;
+
+Q5. Create a database, only if it does not already exist.
+CREATE DATABASE IF NOT EXISTS test_1;
+
+Q6. Drop the database ,only if it exists.
+DROP DATABASE IF EXISTS test_1;
+
+Q7. Drop multiple databases:
+DROP DATABASE test_2, test_3;
+
+Q8. Create a table
+CREATE TABLE student (
+    S_ID INT NOT NULL PRIMARY KEY,
+    S_NAME VARCHAR(255) NOT NULL,
+    S_AGE INT,
+    S_CLASS INT,
+    S_CITY VARCHAR(255),
+    S_PHONE VARCHAR(20)
+);
+
+CREATE TABLE Teachers (
+    T_ID INT NOT NULL PRIMARY KEY,
+    T_NAME VARCHAR(255) NOT NULL,
+    T_AGE INT,
+    T_CITY VARCHAR(255),
+    T_PHONE VARCHAR(20),
+    T_SALARY DECIMAL(10, 2)
+);
+
+Q9. Show all tables in the current database.
+SHOW TABLES;
+
+Q10. Describe the structure of the student table.
+DESC student;
+
+Q11. Insert 6 records into the table.
+
+INSERT INTO student (S_ID, S_NAME, S_AGE, S_CLASS, S_CITY, S_PHONE)
+VALUES
+    (1, 'Nasim', 20, 12, 'Kolkata', '1234567890'),
+    (2, 'Reja', 18, 10, 'Kolkata', '1234567898'),
+    (3, 'Joy', 19, 11, 'Kolkata', '9631237893'),
+    (4, 'Alex', 20, 12, 'Hyderabad', '7891234560'),
+    (5, 'Bob', 17, 9, 'Mumbai', '1237898520'),
+    (6, 'Mew', 18, 11, 'Bengaluru', '1934667890');
+
+
+INSERT INTO Teachers (T_ID, T_NAME, T_AGE, T_CITY, T_PHONE, T_SALARY)
+VALUES
+    (101, 'Alice Smith', 35, 'New York', '123-456-7890', 60000.00),
+    (102, 'Bob Johnson', 42, 'Los Angeles', '987-654-3210', 75000.00),
+    (103, 'Charlie Brown', 28, 'Chicago', '555-111-2222', 50000.00),
+    (104, 'Diana Prince', 50, 'Houston', '777-888-9999', 85000.00),
+    (105, 'Eve Adams', 30, 'Miami', '333-444-5555', 62000.00),
+    (106, 'Frank White', 45, 'Seattle', '999-888-7777', 70000.00),
+    (107, 'Grace Lee', 33, 'Dallas', '222-333-4444', 68000.00);
+
+
+SHOW TABLES;
+
+Q12. Display all records from the student & teachers table.
+SELECT * FROM student;
+SELECT * FROM teachers;
+
+Q13. Describe the structure of the teachers table.
+DESC teachers;
+
+
+Create Sub-Tables (Derived Tables)
+--
+creat subtable 
+
+Q14. Create a table KolkataStudents with students only from Kolkata.
+
+CREATE TABLE KolkataStudents AS
+SELECT * FROM student
+WHERE S_CITY = "Kolkata";
+
+Q15. Create a table SeniorClassStudents with class 12 or higher students, selecting specific columns.
+
+CREATE TABLE SeniorClassStudents AS
+SELECT S_ID, S_NAME, S_CLASS, S_PHONE FROM student
+WHERE S_CLASS >=12;
+
+Q16. Create a table C10StudentsContact with only class 10 students and their contact info.
+
+CREATE TABLE C10StudentsContact AS
+SELECT S_ID, S_NAME, S_PHONE FROM student
+WHERE S_CLASS = 10;
+
+Q17. Create a table HighSalaryTeachers with teachers earning ₹70,000 or more.
+
+CREATE TABLE HighSalaryTeachers AS
+SELECT T_ID, T_NAME, T_AGE, T_PHONE FROM teachers
+WHERE T_SALARY >= 70000.00;
+
+Q18. Create a table ExpertTeachers with teachers older than 40 years.
+
+CREATE TABLE ExpertTeachers AS
+SELECT T_ID, T_NAME, T_PHONE FROM teachers
+WHERE T_AGE >40;
+
+Q19. Show all tables in the database again to verify subtables.
+SHOW TABLES;
+
+
+
+Q20. Rename table student to StudentsTable.
+ALTER TABLE student RENAME TO StudentsTable;
+
+Q21. Rename column name to full_name in table CUSTOMERS.
+ALTER TABLE CUSTOMERS RENAME COLUMN name to full_name;
+
+ALTER TABLE studentstable CHANGE COLUMN S_NAME TO S_FULLNAME VARCHAR(255);
+
+ALTER TABLE studentstable CHANGE COLUMN S_NAME  S_FULLNAME VARCHAR(255);
+
+Q22. Add a new column DOB of type INT to students.
+ALTER TABLE students ADD DOB INT;
+
+
+Q23. Update DOB for S_ID = 1.
+UPDATE students 
+SET DOB = 20040516 
+WHERE S_ID = 1;
+
+Q24. Update DOB for multiple S_IDs using CASE statement.
+UPDATE students
+SET DOB = CASE S_ID
+WHEN 2 THEN 20050901
+WHEN 3 THEN 20060521
+WHEN 4 THEN 20040911
+WHEN 5 THEN 20051007
+WHEN 6 THEN 20070307
+END
+WHERE S_ID IN (2,3,4,5,6);
+
+Q25. Drop column Email from students.
+ALTER TABLE students 
+DROP COLUMN Email;
+
+
+Q26.Modify datatype of a column (generic syntax).
+LTER TABLE table_name
+MODIFY COLUMN column_name datatype;
+
+Q27.Drop table
+DROP TABLE CUSTOMERS;
+
+DROP TABLE IF EXISTS CUSTOMERS;
+
+Q28. Display all rows from students.
+SELECT * FROM students;
+
+Q29. Delete a student where
+DELETE FROM students WHERE S_FULLNAME = 'Reja';
+
+DELETE * FROM GFG_Employees; 
+
+Q30. Delete rows from CUSTOMERS where name is 'Komal' or address is 'Mumbai'.
+DELETE FROM CUSTOMERS 
+WHERE NAME='Komal' OR ADDRESS='Mumbai';
+
+Q31.Truncate all data from CUSTOMERS table.
+TRUNCATE TABLE CUSTOMERS;
