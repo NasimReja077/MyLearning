@@ -33,7 +33,12 @@ CREATE TABLE customer( ID INT, NAME VARCHAR(255), EMAIL VARCHAR(255), ADDRESS VA
 
 task 1- Writhe SQL commands for  how to add a new column , update an existing column and delete an existing column from an existing table 
 
+ALTER TABLE customer ADD COLUMN DOB INT;
+ALTER TABLE customer CHANGE COLUMN NAME FULL_NAME VARCHAR(255);
 table = customer 
+UPDATE customer SET EMAIL = 'HI@GMAIL.COM' WHERE ID = 1;
+ALTER TABLE customer
+DROP COLUMN LOYALTY_POINTS;
 
 table column = name, email, address, mobile_number 
 SELECT customer * FROM 
