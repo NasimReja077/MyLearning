@@ -174,3 +174,162 @@ WHERE NAME='Komal' OR ADDRESS='Mumbai';
 
 Q31.Truncate all data from CUSTOMERS table.
 TRUNCATE TABLE CUSTOMERS;
+
+-------------------
+The SQL Clause
+
+SELECT * FROM teachers WHERE T_AGE <= 40;
+
+
+SELECT T_ID, T_NAME, T_AGE, T_PHONE FROM teachers WHERE T_CITY = 'KOLKATA';
+
+
+CREATE TABLE KolkataTeachers AS
+SELECT T_ID, T_NAME, T_PHONE FROM teachers
+WHERE T_CITY = "Kolkata";
+
+
+SELECT * FROM Teachers WHERE NOT T_CITY = 'New York';
+
+SELECT * FROM teachers WHERE T_AGE BETWEEN 30 AND 45;
+
+SELECT * FROM teachers WHERE T_AGE IN (25,30);
+
+SELECT T_NAME
+FROM Teachers
+WHERE T_NAME LIKE 'B%';
+
+SELECT T_NAME, T_CITY
+FROM Teachers
+WHERE T_CITY = 'New York' OR T_CITY = 'Chicago';
+
+UPDATE Teachers SET T_SALARY = 53000.00 WHERE T_CITY = 'Chicago';
+
+UPDATE teachers SET T_NAME = 'Nasim' WHERE T_CITY = 'Chicago' ;
+
+DELETE FROM teachers WHERE T_AGE <= 25;
+
+
+// The SQL ORDER BY Clause
+
+SELECT * FROM teachers ORDER BY T_NAME ASC;
+SELECT * FROM teachers ORDER BY T_NAME DESC;
+
+SELECT * FROM teachers ORDER BY T_AGE ASC, T_SALARY DESC;
+
+SELECT * FROM teachers 
+WHERE T_AGE <=45 ORDER BY T_NAME DESC;
+
+SELECT T_ID,T_NAME,T_SALARY FROM teachers ORDER BY T_NAME LIMIT 3;
+
+
+SELECT T_NAME, T_AGE, T_CITY
+FROM Teachers
+WHERE T_CITY = 'New York'
+ORDER BY T_AGE ASC;
+
+SELECT T_CITY, AVG(T_SALARY) AS AverageSalary
+FROM Teachers
+GROUP BY T_CITY
+ORDER BY AverageSalary DESC;
+
+SELECT T_NAME, T_AGE
+FROM Teachers
+ORDER BY T_AGE DESC
+LIMIT 3;
+
+SELECT T_ID, T_NAME
+FROM Teachers
+ORDER BY T_NAME ASC
+LIMIT 2, 3;
+----------------------
+Pattern	Meaning
+'a%'	Match strings that start with 'a'
+
+'%a'	Match strings with end with 'a'
+
+'a%t'	Match strings that contain the start with 'a' and end with 't'.
+
+'%wow%'	Match strings that contain the substring 'wow' in them at any position.
+
+'_wow%'	Match strings that contain the substring 'wow' in them at the second position.
+
+'_a%'	Match strings that contain 'a' at the second position.
+
+'a_ _%'	Match strings that start with 'a and contain at least 2 more characters.
+
+-------------------
+UNION
+
+SELECT T_NAME AS Name, T_CITY AS City
+FROM teachers
+UNION
+SELECT S_FULLNAME AS Name, S_CITY AS City
+FROM students;
+
+SELECT T_NAME AS NAME, T_CITY AS CITY
+FROM teachers
+UNION ALL 
+SELECT S_FULLNAME AS NAME, S_CITY AS CITY
+FROM students;
+
+SELECT T_NAME AS CONTACTNAME, T_PHONE AS PHONENUMBER
+FROM teachers
+WHERE T_CITY = 'Kolkata'
+UNION ALL
+SELECT S_FULLNAME AS CONTACTNAME, S_PHONE AS PHONENUMBER
+FROM students
+WHERE S_CITY = 'Kolkata';
+
+
+
+SELECT T_CITY FROM teachers
+UNION
+SELECT S_CITY FROM students
+ORDER BY CITY;
+OR--
+SELECT T_CITY AS City FROM teachers
+UNION
+SELECT S_CITY AS City FROM students
+ORDER BY City;
+
+
+-----------
+SQL Aggregate functions
+
+SELECT COUNT(*) AS TOTAL_TEACHERS
+FROM teachers;
+
+SELECT COUNT(T_AGE) AS TEACHERS_AGE
+FROM Teachers;
+
+SELECT COUNT(*) AS KOLKATA_STUDENTS FROM students WHERE S_CITY = 'Kolkata';
+
+
+SELECT T_CITY, COUNT(T_ID) AS NUMBER_OF_TEACHERS_IN_CITY
+FROM teachers
+GROUP BY T_CITY;
+
+
+SELECT S_CLASS, COUNT(S_ID) AS NUMBER_OF_STUDENT_IN_CLASS
+FROM students
+GROUP BY S_CLASS;
+
+
+SELECT T_CITY, COUNT(T_ID) AS NUMBEROFTEACHERS
+FROM teachers
+GROUP BY T_CITY
+HAVING COUNT(T_ID) > 1;
+
+
+SELECT AVG(T_SALARY) AS AverageTeacherSalary
+FROM Teachers;
+
+SELECT AVG(T_SALARY) AS AverageSalaryNewYork
+FROM Teachers
+WHERE T_CITY = 'New York';
+
+SELECT T_CITY, AVG(T_SALARY) AS AverageSalaryPerCity
+FROM Teachers
+GROUP BY T_CITY;
+
