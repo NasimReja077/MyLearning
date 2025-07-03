@@ -333,3 +333,218 @@ SELECT T_CITY, AVG(T_SALARY) AS AverageSalaryPerCity
 FROM Teachers
 GROUP BY T_CITY;
 
+
+
+SELECT SUM(T_SALARY) AS TOTAL_SALARY
+FROM teachers;
+
+SELECT SUM(T_SALARY) AS KolkataTeachersTotalSalary
+FROM Teachers
+WHERE T_CITY = 'Kolkata';
+
+
+SELECT MIN(T_SALARY) AS LowestTeacherSalary
+FROM Teachers;
+
+SELECT MIN(S_AGE) AS YoungestStudentAge
+FROM studentstable;
+
+
+SELECT T_CITY, MIN(T_SALARY) AS MinSalaryPerCity
+FROM Teachers
+GROUP BY T_CITY;
+
+SELECT S_CLASS, MIN(S_AGE) AS MinAgePerClass
+FROM studentstable
+GROUP BY S_CLASS;
+
+
+SELECT MAX(T_SALARY) AS HighestTeacherSalary
+FROM Teachers;
+
+SELECT MAX(S_AGE) AS OldestStudentAge
+FROM studentstable;
+
+
+SELECT T_CITY, MAX(T_SALARY) AS MaxSalaryPerCity
+FROM Teachers
+GROUP BY T_CITY;
+
+---------------
+SELECT T_CITY, COUNT(T_ID) AS NB_OF_TEACHERS
+FROM teachers 
+GROUP BY T_CITY;
+
+
+SELECT T_CITY, AVG(T_SALARY) AS AVARAGE_SALARY
+FROM teachers
+GROUP BY T_CITY;
+
+
+SELECT T_CITY, MAX(T_AGE) AS MAX_AGE_TEACHERS, MIN(T_AGE) AS MIN_AGE_TEACHERS
+FROM teachers
+GROUP BY T_CITY;
+
+
+SELECT T_CITY, T_NAME, COUNT(T_ID) AS NUMBER_TEACHERS_SAL
+FROM teachers
+WHERE T_SALARY >= 60000.00
+GROUP BY T_CITY;
+
+
+SELECT S_AGE, COUNT(S_FULLNAME) AS NUMBEROF_STUDENT 
+FROM students
+GROUP BY S_AGE;
+
+SELECT S_AGE, COUNT(S_FULLNAME) AS NUMBEROF_STUDENT 
+FROM students
+GROUP BY S_AGE;
+
+SELECT S_AGE, COUNT(S_FULLNAME) AS NUMBEROF_STUDENT 
+FROM students
+WHERE S_AGE >= 18
+GROUP BY S_AGE;
+
+
+--------
+SELECT T_CITY, AVG(T_SALARY) AS AVG_SALARY
+FROM teachers
+GROUP BY T_CITY
+HAVING AVG (T_SALARY) > 65000.00;
+
+-- Explanation:
+-- 1. GROUP BY T_CITY: Groups teachers by their city.
+-- 2. AVG(T_SALARY): Calculates the average salary for each city group.
+-- 3. HAVING AVG(T_SALARY) > 65000.00: Filters these groups, keeping only those where the calculated average salary is greater than 65000.00.
+
+
+SELECT S_CITY, COUNT(S_ID) AS NUMBER_OF_STUDENTS
+FROM students
+GROUP BY S_CITY
+HAVING COUNT(S_ID) > 1;
+
+-- Explanation:
+-- 1. GROUP BY T_CITY: Groups teachers by city.
+-- 2. COUNT(T_ID): Counts the number of teachers in each city group.
+-- 3. HAVING COUNT(T_ID) > 1: Filters these groups, keeping only cities with more than 1 teacher.
+
+
+SELECT T_CITY, MIN(T_AGE) AS NIMAGE_TEACHERS
+FROM teachers
+GROUP BY T_CITY
+HAVING MIN(T_AGE) < 30;
+
+SELECT T_CITY, SUM(T_SALARY) AS TOTAL_SAL
+FROM teachers 
+GROUP BY T_CITY
+HAVING SUM(T_SALARY);
+
+SELECT T_CITY, SUM(T_SALARY) AS TOTAL_SAL
+FROM teachers 
+GROUP BY T_CITY
+HAVING SUM(T_SALARY) BETWEEN 120000.00 AND 150000.00;
+
+
+SELECT T_CITY, AVG(T_SALARY) AS AVG_SALARY, COUNT(T_ID) AS NB_TEACHERS
+FROM teachers
+GROUP BY T_CITY
+HAVING SUM(T_SALARY) > 60000.00 AND COUNT(T_ID) = 2;
+
+
+SELECT T_CITY, SUM(T_SALARY) AS TOTAL_SAL
+FROM teachers 
+GROUP BY T_CITY
+HAVING SUM(T_SALARY)
+ORDER BY TOTAL_SAL DESC;
+
+SELECT T_NAME, T_AGE, T_CITY, SUM(T_SALARY) AS TOTAL_SAL
+FROM teachers
+GROUP BY T_CITY,
+T_AGE HAVING TOTAL_SAL >=65000.00
+ORDER BY TOTAL_SAL ASC;
+--------------
+SQL WITH Clause Examples BAKE 
+-------------------------
+
+sql queries
+
+UPDATE teachers
+SET T_CITY = 'Bostan'
+WHERE T_ID = 103;
+
+UPDATE teachers
+SET T_SALARY = T_SALARY * 1.10
+WHERE T_CITY = 'Kolkata';
+
+DELETE * FROM GFG_Employees; 
+
+DELETE FROM GFG_Employees 
+WHERE department = 'Development';
+
+
+SELECT TOP 5 T_NAME, T_SALARY
+FROM teachers
+ORDER BY T_SALARY DESC;
+
+SELECT T_ID, T_NAME
+-- FROM Teachers
+-- ORDER BY T_NAME ASC
+-- FETCH FIRST 3 ROWS ONLY;
+
+SELECT T_ID, T_NAME
+-- FROM Teachers
+-- ORDER BY T_NAME ASC
+-- OFFSET 2 ROWS
+-- FETCH NEXT 2 ROWS ONLY;
+
+ CONCEPTUAL: Get the top 2 teachers by salary, including ties (SQL Standard syntax)
+-- SELECT T_NAME, T_SALARY
+-- FROM Teachers
+-- ORDER BY T_SALARY DESC
+-- FETCH FIRST 2 ROWS WITH TIES;
+
+------------
+SELECT S_FULLNAME, S_CLASS
+FROM students
+WHERE S_CLASS IN (10, 12);
+
+SELECT T_NAME, T_CITY
+FROM teachers
+WHERE T_CITY NOT IN ('New York', 'Chicago');
+
+SELECT T_NAME, T_CITY
+FROM teachers
+WHERE T_CITY IN (SELECT S_CITY FROM students);
+
+
+
+SELECT T_NAME, T_CITY
+FROM teachers
+WHERE T_CITY NOT IN ('New York', 'Kolkata');
+
+SELECT S_FULLNAME, S_AGE
+FROM students
+WHERE S_AGE NOT BETWEEN 18 AND 19;
+
+
+
+SELECT T_NAME, T_SALARY
+FROM teachers
+WHERE T_SALARY BETWEEN 50000.000 AND 70000.00
+AND T_NAME IN ('Alice Smith', 'Frank White');
+
+
+SELECT T_NAME, T_CITY, T_SALARY
+FROM Teachers
+WHERE T_SALARY BETWEEN 50000.00 AND 70000.00
+  AND T_NAME IN ('Alice Smith', 'Frank White')
+  AND T_CITY = 'New York';
+
+
+SELECT T_NAME, T_SALARY
+FROM Teachers
+WHERE T_SALARY BETWEEN 50000.00 AND 70000.00
+  OR T_NAME IN ('Diana Prince', 'Charlie Brown');
+
+
+  
