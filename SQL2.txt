@@ -178,70 +178,127 @@ TRUNCATE TABLE CUSTOMERS;
 -------------------
 The SQL Clause
 
-SELECT * FROM teachers WHERE T_AGE <= 40;
+Q32. Retrieve all teachers whose age is less than or equal to 40.
 
+SELECT * FROM teachers 
+WHERE T_AGE <= 40;
 
-SELECT T_ID, T_NAME, T_AGE, T_PHONE FROM teachers WHERE T_CITY = 'KOLKATA';
+Q33. Retrieve teacher details (ID, Name, Age, Phone) who are from Kolkata.
 
+SELECT T_ID, T_NAME, T_AGE, T_PHONE 
+FROM teachers 
+WHERE T_CITY = 'KOLKATA';
+
+Q34. Create a new table KolkataTeachers with data of teachers from Kolkata.
 
 CREATE TABLE KolkataTeachers AS
-SELECT T_ID, T_NAME, T_PHONE FROM teachers
+SELECT T_ID, T_NAME, T_PHONE 
+FROM teachers
 WHERE T_CITY = "Kolkata";
 
+Q35. Display all teachers who are not from New York.
 
-SELECT * FROM Teachers WHERE NOT T_CITY = 'New York';
+SELECT * FROM Teachers 
+WHERE NOT T_CITY = 'New York';
 
-SELECT * FROM teachers WHERE T_AGE BETWEEN 30 AND 45;
+Q36. Retrieve teachers whose age is between 30 and 45 (inclusive).
 
-SELECT * FROM teachers WHERE T_AGE IN (25,30);
+SELECT * FROM teachers 
+WHERE T_AGE BETWEEN 30 AND 45;
+
+Q37. Retrieve teachers whose age is either 25 or 30.
+
+SELECT * FROM teachers 
+WHERE T_AGE IN (25,30);
+
+Q38. Retrieve names of teachers starting with the letter 'B'.
 
 SELECT T_NAME
 FROM Teachers
 WHERE T_NAME LIKE 'B%';
 
+Q39. Retrieve name and city of teachers from either New York or Chicago.
+
 SELECT T_NAME, T_CITY
 FROM Teachers
 WHERE T_CITY = 'New York' OR T_CITY = 'Chicago';
 
-UPDATE Teachers SET T_SALARY = 53000.00 WHERE T_CITY = 'Chicago';
+Q40. Update the salary to 53000 for all teachers in Chicago. 
 
-UPDATE teachers SET T_NAME = 'Nasim' WHERE T_CITY = 'Chicago' ;
+UPDATE Teachers 
+SET T_SALARY = 53000.00 
+WHERE T_CITY = 'Chicago';
 
-DELETE FROM teachers WHERE T_AGE <= 25;
+Q41. Update the name of the teacher to 'Nasim' where the city is Chicago.
+
+UPDATE teachers 
+SET T_NAME = 'Nasim' 
+WHERE T_CITY = 'Chicago' ;
+
+Q42. Delete all teachers whose age is less than or equal to 25.
+
+DELETE FROM teachers 
+WHERE T_AGE <= 25;
 
 
 // The SQL ORDER BY Clause
 
+Q43. Display all teachers sorted in ascending order by their name.
+
 SELECT * FROM teachers ORDER BY T_NAME ASC;
+
+Q44. Display all teachers sorted in descending order by their name.
+
 SELECT * FROM teachers ORDER BY T_NAME DESC;
 
-SELECT * FROM teachers ORDER BY T_AGE ASC, T_SALARY DESC;
+Q45. Display teachers ordered by ascending age and descending salary.
 
 SELECT * FROM teachers 
-WHERE T_AGE <=45 ORDER BY T_NAME DESC;
+ORDER BY T_AGE ASC, T_SALARY DESC;
 
-SELECT T_ID,T_NAME,T_SALARY FROM teachers ORDER BY T_NAME LIMIT 3;
+Q46. Display teachers with age ≤ 45, ordered by name in descending order.
 
+SELECT * FROM teachers 
+WHERE T_AGE <=45 
+ORDER BY T_NAME DESC;
+
+Q47. Retrieve top 3 teachers’ IDs, names, and salaries sorted by name.
+
+SELECT T_ID,T_NAME,T_SALARY 
+FROM teachers 
+ORDER BY T_NAME LIMIT 3;
+
+Q48. Retrieve teachers from New York ordered by age in ascending order.
 
 SELECT T_NAME, T_AGE, T_CITY
 FROM Teachers
 WHERE T_CITY = 'New York'
 ORDER BY T_AGE ASC;
 
+Q49. Show average salary per city, sorted by salary descending.
+
 SELECT T_CITY, AVG(T_SALARY) AS AverageSalary
 FROM Teachers
 GROUP BY T_CITY
 ORDER BY AverageSalary DESC;
+
+
+Q50. Retrieve the top 3 oldest teachers with their names and ages.
 
 SELECT T_NAME, T_AGE
 FROM Teachers
 ORDER BY T_AGE DESC
 LIMIT 3;
 
+Q51. Retrieve 3 teachers starting from the 3rd alphabetically.
+
 SELECT T_ID, T_NAME
 FROM Teachers
 ORDER BY T_NAME ASC
 LIMIT 2, 3;
+
+ OFFSET 2 means skip first 2 rows, then take next 3.
+
 ----------------------
 Pattern	Meaning
 'a%'	Match strings that start with 'a'
@@ -261,17 +318,23 @@ Pattern	Meaning
 -------------------
 UNION
 
+Q56. Combine name and city from teachers and students using UNION.
+
 SELECT T_NAME AS Name, T_CITY AS City
 FROM teachers
 UNION
 SELECT S_FULLNAME AS Name, S_CITY AS City
 FROM students;
 
+Q57. Same as above but include duplicates using UNION ALL.
+
 SELECT T_NAME AS NAME, T_CITY AS CITY
 FROM teachers
 UNION ALL 
 SELECT S_FULLNAME AS NAME, S_CITY AS CITY
 FROM students;
+
+Q58. Get contact names and phone numbers of all people in Kolkata.
 
 SELECT T_NAME AS CONTACTNAME, T_PHONE AS PHONENUMBER
 FROM teachers
@@ -281,7 +344,7 @@ SELECT S_FULLNAME AS CONTACTNAME, S_PHONE AS PHONENUMBER
 FROM students
 WHERE S_CITY = 'Kolkata';
 
-
+Q59. Retrieve all distinct cities from both teachers and students.
 
 SELECT T_CITY FROM teachers
 UNION
@@ -297,116 +360,159 @@ ORDER BY City;
 -----------
 SQL Aggregate functions
 
+Q60. Count the total number of teachers.
+
 SELECT COUNT(*) AS TOTAL_TEACHERS
 FROM teachers;
+
+Q61. Count how many teachers have a non-null age.
 
 SELECT COUNT(T_AGE) AS TEACHERS_AGE
 FROM Teachers;
 
-SELECT COUNT(*) AS KOLKATA_STUDENTS FROM students WHERE S_CITY = 'Kolkata';
+Q62. Count how many students are from Kolkata.
 
+SELECT COUNT(*) AS KOLKATA_STUDENTS 
+FROM students 
+WHERE S_CITY = 'Kolkata';
+
+Q63. Count the number of teachers in each city.
 
 SELECT T_CITY, COUNT(T_ID) AS NUMBER_OF_TEACHERS_IN_CITY
 FROM teachers
 GROUP BY T_CITY;
 
+Q64. Count the number of students in each class.
 
 SELECT S_CLASS, COUNT(S_ID) AS NUMBER_OF_STUDENT_IN_CLASS
 FROM students
 GROUP BY S_CLASS;
 
 
+Q65. Show cities that have more than one teacher.
+
 SELECT T_CITY, COUNT(T_ID) AS NUMBEROFTEACHERS
 FROM teachers
 GROUP BY T_CITY
 HAVING COUNT(T_ID) > 1;
 
+Q66. Show the average salary of all teachers.
 
 SELECT AVG(T_SALARY) AS AverageTeacherSalary
 FROM Teachers;
 
+
+Q66. Show the average salary of all teachers.
+
 SELECT AVG(T_SALARY) AS AverageSalaryNewYork
 FROM Teachers
 WHERE T_CITY = 'New York';
+
+Q68. Show the average salary per city.
 
 SELECT T_CITY, AVG(T_SALARY) AS AverageSalaryPerCity
 FROM Teachers
 GROUP BY T_CITY;
 
 
+Q69. Show the total salary paid to all teachers.
 
 SELECT SUM(T_SALARY) AS TOTAL_SALARY
 FROM teachers;
+
+Q70. Show total salary of teachers in Kolkata.
 
 SELECT SUM(T_SALARY) AS KolkataTeachersTotalSalary
 FROM Teachers
 WHERE T_CITY = 'Kolkata';
 
+Q71. Find the lowest salary among all teachers.
 
 SELECT MIN(T_SALARY) AS LowestTeacherSalary
 FROM Teachers;
 
+Q72. Find the youngest student’s age.
+
 SELECT MIN(S_AGE) AS YoungestStudentAge
 FROM studentstable;
 
+Q73. Find the minimum salary per city.
 
 SELECT T_CITY, MIN(T_SALARY) AS MinSalaryPerCity
 FROM Teachers
 GROUP BY T_CITY;
 
+Q74. Find the minimum student age per class.
+
 SELECT S_CLASS, MIN(S_AGE) AS MinAgePerClass
 FROM studentstable
 GROUP BY S_CLASS;
 
+Q75. Find the highest salary among teachers.
 
 SELECT MAX(T_SALARY) AS HighestTeacherSalary
 FROM Teachers;
 
+Q76. Find the oldest student’s age.
+
 SELECT MAX(S_AGE) AS OldestStudentAge
 FROM studentstable;
 
+Q77. Find the maximum teacher salary per city.
 
 SELECT T_CITY, MAX(T_SALARY) AS MaxSalaryPerCity
 FROM Teachers
 GROUP BY T_CITY;
 
 ---------------
+
+Q78. Find number of teachers per city.
+
 SELECT T_CITY, COUNT(T_ID) AS NB_OF_TEACHERS
 FROM teachers 
 GROUP BY T_CITY;
 
+Q79. Show average salary of teachers grouped by city.
 
 SELECT T_CITY, AVG(T_SALARY) AS AVARAGE_SALARY
 FROM teachers
 GROUP BY T_CITY;
 
+Q80. Show the oldest and youngest teacher per city.
 
 SELECT T_CITY, MAX(T_AGE) AS MAX_AGE_TEACHERS, MIN(T_AGE) AS MIN_AGE_TEACHERS
 FROM teachers
 GROUP BY T_CITY;
 
+Q81. Show number of teachers with salary ≥ 60000 grouped by city.
 
 SELECT T_CITY, T_NAME, COUNT(T_ID) AS NUMBER_TEACHERS_SAL
 FROM teachers
 WHERE T_SALARY >= 60000.00
 GROUP BY T_CITY;
 
+Q82. Show student count grouped by age.
 
 SELECT S_AGE, COUNT(S_FULLNAME) AS NUMBEROF_STUDENT 
 FROM students
 GROUP BY S_AGE;
 
+Q82. Show student count grouped by age.
+
 SELECT S_AGE, COUNT(S_FULLNAME) AS NUMBEROF_STUDENT 
 FROM students
 GROUP BY S_AGE;
+
+Q83. Show student count by age, but only for age ≥ 18.
 
 SELECT S_AGE, COUNT(S_FULLNAME) AS NUMBEROF_STUDENT 
 FROM students
 WHERE S_AGE >= 18
 GROUP BY S_AGE;
-
-
 --------
+
+Q84. Show cities with average teacher salary > ₹65000.
+
 SELECT T_CITY, AVG(T_SALARY) AS AVG_SALARY
 FROM teachers
 GROUP BY T_CITY
@@ -417,6 +523,7 @@ HAVING AVG (T_SALARY) > 65000.00;
 -- 2. AVG(T_SALARY): Calculates the average salary for each city group.
 -- 3. HAVING AVG(T_SALARY) > 65000.00: Filters these groups, keeping only those where the calculated average salary is greater than 65000.00.
 
+Q85. Show student cities where more than 1 student lives.
 
 SELECT S_CITY, COUNT(S_ID) AS NUMBER_OF_STUDENTS
 FROM students
@@ -428,34 +535,43 @@ HAVING COUNT(S_ID) > 1;
 -- 2. COUNT(T_ID): Counts the number of teachers in each city group.
 -- 3. HAVING COUNT(T_ID) > 1: Filters these groups, keeping only cities with more than 1 teacher.
 
+Q86. Show cities where the youngest teacher is under 30.
 
 SELECT T_CITY, MIN(T_AGE) AS NIMAGE_TEACHERS
 FROM teachers
 GROUP BY T_CITY
 HAVING MIN(T_AGE) < 30;
 
+
 SELECT T_CITY, SUM(T_SALARY) AS TOTAL_SAL
 FROM teachers 
 GROUP BY T_CITY
 HAVING SUM(T_SALARY);
+
+Q87. Show cities where total salary of teachers is between ₹120000 and ₹150000.
 
 SELECT T_CITY, SUM(T_SALARY) AS TOTAL_SAL
 FROM teachers 
 GROUP BY T_CITY
 HAVING SUM(T_SALARY) BETWEEN 120000.00 AND 150000.00;
 
+Q88. Show cities with exactly 2 teachers and salary sum > ₹60000.
 
 SELECT T_CITY, AVG(T_SALARY) AS AVG_SALARY, COUNT(T_ID) AS NB_TEACHERS
 FROM teachers
 GROUP BY T_CITY
 HAVING SUM(T_SALARY) > 60000.00 AND COUNT(T_ID) = 2;
 
+Q89. Show total salary per city in descending order.
 
 SELECT T_CITY, SUM(T_SALARY) AS TOTAL_SAL
 FROM teachers 
 GROUP BY T_CITY
 HAVING SUM(T_SALARY)
 ORDER BY TOTAL_SAL DESC;
+
+
+Q90. Show teacher name, age, city and total salary grouped by city and age where salary ≥ ₹65000.
 
 SELECT T_NAME, T_AGE, T_CITY, SUM(T_SALARY) AS TOTAL_SAL
 FROM teachers
@@ -468,28 +584,44 @@ SQL WITH Clause Examples BAKE
 
 sql queries
 
+Q91. Update the city of the teacher with T_ID = 103 to 'Bostan'.
+
 UPDATE teachers
 SET T_CITY = 'Bostan'
 WHERE T_ID = 103;
+
+Q92. Increase the salary of all teachers in Kolkata by 10%.
 
 UPDATE teachers
 SET T_SALARY = T_SALARY * 1.10
 WHERE T_CITY = 'Kolkata';
 
+Q94. Delete all employees from GFG_Employees in the 'Development' department.
+
 DELETE * FROM GFG_Employees; 
+
 
 DELETE FROM GFG_Employees 
 WHERE department = 'Development';
 
+Q95. Select top 5 highest paid teachers.
 
 SELECT TOP 5 T_NAME, T_SALARY
 FROM teachers
 ORDER BY T_SALARY DESC;
 
+TOP is used in SQL Server, while LIMIT is used in MySQL.
+
+Q96. Select first 3 rows alphabetically using FETCH (standard SQL).
+
 SELECT T_ID, T_NAME
 -- FROM Teachers
 -- ORDER BY T_NAME ASC
 -- FETCH FIRST 3 ROWS ONLY;
+
+ Standard SQL syntax; might not work in MySQL — use LIMIT 3 for MySQL.
+
+Q97. Skip 2 rows and fetch next 2 rows (pagination-like behavior).
 
 SELECT T_ID, T_NAME
 -- FROM Teachers
@@ -504,35 +636,44 @@ SELECT T_ID, T_NAME
 -- FETCH FIRST 2 ROWS WITH TIES;
 
 ------------
+Q99. Select students in class 10 or 12.
+
 SELECT S_FULLNAME, S_CLASS
 FROM students
 WHERE S_CLASS IN (10, 12);
+
+Q100. Select teachers not in New York or Chicago.
 
 SELECT T_NAME, T_CITY
 FROM teachers
 WHERE T_CITY NOT IN ('New York', 'Chicago');
 
+Q101. Select teachers whose city exists in the students table.
+
 SELECT T_NAME, T_CITY
 FROM teachers
 WHERE T_CITY IN (SELECT S_CITY FROM students);
 
-
+Q102. Select teachers not from New York or Kolkata.
 
 SELECT T_NAME, T_CITY
 FROM teachers
 WHERE T_CITY NOT IN ('New York', 'Kolkata');
 
+Q103. Select students whose age is not between 18 and 19.
+
 SELECT S_FULLNAME, S_AGE
 FROM students
 WHERE S_AGE NOT BETWEEN 18 AND 19;
 
-
+Q104. Select teachers with salary between ₹50,000 and ₹70,000 and name in ('Alice Smith', 'Frank White').
 
 SELECT T_NAME, T_SALARY
 FROM teachers
 WHERE T_SALARY BETWEEN 50000.000 AND 70000.00
 AND T_NAME IN ('Alice Smith', 'Frank White');
 
+Q105. Select teachers with salary between ₹50,000–₹70,000, named Alice or Frank, and from New York.
 
 SELECT T_NAME, T_CITY, T_SALARY
 FROM Teachers
@@ -541,10 +682,117 @@ WHERE T_SALARY BETWEEN 50000.00 AND 70000.00
   AND T_CITY = 'New York';
 
 
+Q106. Select teachers whose salary is between ₹50,000–₹70,000 OR name is 'Diana Prince' or 'Charlie Brown'.
+
 SELECT T_NAME, T_SALARY
 FROM Teachers
 WHERE T_SALARY BETWEEN 50000.00 AND 70000.00
   OR T_NAME IN ('Diana Prince', 'Charlie Brown');
 
 
-  
+  --------------------
+Q107. Create a table named library_teachers.
+
+  CREATE TABLE libarey_teachers (
+    L_ID INT NOT NULL PRIMARY KEY,
+    L_NAME VARCHAR(255) NOT NULL,
+    L_AGE INT,
+    L_CITY VARCHAR(255),
+    L_CLASS INT 
+);
+
+Q108. Create a Book table with a primary key.
+
+CREATE TABLE IF NOT EXISTS Book (
+    BookID INT NOT NULL,
+    BookName VARCHAR(255) NOT NULL,
+    BookPrice DECIMAL(10, 2),
+    PRIMARY KEY (BookID)
+);
+
+Q109. Create an Orders_Books table with a composite primary key.
+
+CREATE TABLE IF NOT EXISTS Orders_Books (
+    OrderID INT NOT NULL,
+    BookNumber INT NOT NULL,
+    BookName VARCHAR(255),
+    BookClass INT,
+    PRIMARY KEY (OrderID, BookNumber)
+);
+
+ALTER TABLE orders_books
+DROP PRIMARY KEY (BookNumber);
+-------------------
+
+SQL FOREIGN KEY
+
+CREATE TABLE STUDENT(
+     STUDENT_ID INT PRIMARY KEY,
+     NAME VARCHAR(20),
+     ADDRESS VARCHAR(20),
+     AGE INT,
+     DOB DATE);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Drop
+Create
+TABLE
+INT
+ NOT NULL 
+PRIMARY KEY,
+VARCHAR
+DECIMAL
+SHOW
+DESC student;
+INSERT
+ INTO
+VALUES
+WHERE
+SELECT
+FROM
+AS
+ALTER
+INT
+UPDATE
+SET
+WHERE
+WHEN
+WHERE
+MODIFY COLUMN
+IF EXISTS
+AND OR NOT NULL
+CREATE
+LIKE
+DELETE
+ORDER BY
+ASC
+DESC
+LIMIT
+GROUP BY
+UNION
+UNION ALL
+SELECT 
+COUNT
+AVG
+HAVING
+MIN MAX
+OR
+ORDER BY
+FETCH FIRST
+OFFSET
+NOT IN
+BETWEEN
+FOREIGN KEY
