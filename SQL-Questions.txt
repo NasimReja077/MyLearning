@@ -1,0 +1,50 @@
+✅ Q1. What is SQL?
+Ans:
+SQL (Structured Query Language) is a standard programming language used to store, manipulate, and retrieve data from relational databases. It allows users to perform operations like creating databases and tables, inserting, updating, and deleting records, and querying data.
+
+✅ Q2. What is RDBMS?
+Ans:
+RDBMS (Relational Database Management System) is a software system that manages relational databases. In RDBMS, data is stored in tables (relations) which consist of rows and columns. Each row is a record, and each column is a field or attribute. Examples include MySQL, PostgreSQL, Oracle, and SQL Server.
+
+✅ Q3. What is a Database and how to create a database using SQL Command?
+Ans:
+A Database is a collection of organized data that can be easily accessed, managed, and updated. In SQL, you can create a database using the following command:
+
+CREATE DATABASE school;
+To use the created database:
+
+USE school;
+✅ Q4. What is a Table and how to create a table using SQL Command?
+Ans:
+A Table is a collection of rows and columns used to store structured data in a database. Each row is a record, and each column is a field.
+To create a table in SQL:
+
+CREATE TABLE student (
+    S_ID INT PRIMARY KEY,
+    S_NAME VARCHAR(100),
+    S_AGE INT,
+    S_CLASS INT
+);
+✅ Q5. What is an Entity?
+Ans:
+An Entity is a real-world object or concept about which data is stored in a database. For example, in a school system:
+
+Student, Teacher, and Course can be entities.
+Each entity corresponds to a table in the database.
+
+✅ Q6. What is a Column and Row?
+Ans:
+
+A Column is a vertical entity in a table that holds data for a specific attribute (e.g., Name, Age).
+
+A Row is a horizontal entity in a table that represents a single record (e.g., one student's data).
+
+Example:
+
+| ID | Name   | Age |
+|----|--------|-----|
+| 1  | Nasim  | 20  |   ← Row (record)
+| 2  | Reja   | 18  |
+
+↑    ↑       ↑  
+Col  Col     Col
