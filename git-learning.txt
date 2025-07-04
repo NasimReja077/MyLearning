@@ -1,2 +1,27 @@
 Creat a clone from github repository : 
 git clone https://github.com/NasimReja077/MyLearning.git
+
+$ cd MyLearning/
+
+ls 
+
+ How do you check the current status of your Git repo (like unstaged files)?
+
+$ git status
+
+Q5. How do you add a specific file
+
+git add  git-learning.txt
+
+Q6. How do you add all modified files to the staging area?
+
+$ git add .
+
+Q7. How do you commit the staged changes with a message?
+
+$ git commit -m "Adding My Learning"
+
+Q8. How do you push your local changes to GitHub (remote repo)?
+
+$ git push
+
