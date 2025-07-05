@@ -1,5 +1,7 @@
 ✅ Q1. What is SQL?
 Ans:
+SQL is a standard language for storing, manipulating and retrieving data in databases
+
 SQL (Structured Query Language) is a standard programming language used to store, manipulate, and retrieve data from relational databases. It allows users to perform operations like creating databases and tables, inserting, updating, and deleting records, and querying data.
 
 ✅ Q2. What is RDBMS?
@@ -62,3 +64,80 @@ ALTER TABLE - modifies a table
 DROP TABLE - deletes a table
 CREATE INDEX - creates an index (search key)
 DROP INDEX - deletes an index
+
+
+Q7. VARCHAR - 
+    In SQL, VARCHAR is a data type used to store character strings of variable length, up to a specified maximum. It efficiently uses storage space by only allocating the amount needed for the actual string, plus a small overhead for length information. This makes it suitable for columns where the string length varies significantly between rows. 
+
+
+Q8. INSERT - 
+    INSERT is a statement used to add new rows of data into a table within a database. . It's a fundamental command for populating tables with initial data or adding new records. The INSERT statement allows you to insert data into all columns or specific columns of a table. 
+
+Q9. SELECT - 
+    The SELECT statement is used to select data from a database.
+
+Q10. UPDATE - 
+    The UPDATE statement is used to modify the existing records in a table.
+
+    In SQL, the UPDATE statement is used to modify existing records in a table. Whether you are updating a single record or multiple records at once, SQL provides the necessary functionality to make these changes. Whether you are working with a small dataset or handling large-scale databases, the UPDATE statement plays a crucial role in maintaining the integrity of your data.
+
+Parameters: 
+
+UPDATE: The SQL command used to modify the data in a table.
+SET: This clause defines which columns will be updated and what their new values will be.
+WHERE: The condition that determines which rows will be updated. Without it, all rows will be affected.
+table_name: name of the table in which you want to make updates
+column1, column2, ...: The columns you want to update.
+value1, value2, ...: The new values to assign to these columns.
+condition: Specifies which rows to update. This condition is crucial, as omitting it will update all rows in the table.
+
+Note: In the above query the SET statement is used to set new values to the particular column and the WHERE clause is used to select the rows for which the columns are needed to be updated. If we have not used the WHERE clause then the columns in all the rows will be updated. So the WHERE clause is used to choose the particular rows. 
+
+DELETE - 
+    The DELETE statement is used to delete existing records in a table.
+
+    The SQL DELETE statement is part of the Data Manipulation Language (DML) and is used to remove data from a table. The key advantage of using DELETE is that it allows you to specify a condition (using the WHERE clause) to delete only the rows that match certain criteria. This ensures you don’t accidentally remove all the data from the table unless that is your intention.
+
+
+Q11. SET-
+    The SET command is used with UPDATE to specify which columns and values that should be updated in a table.
+
+Q12. WHERE - 
+    He WHERE clause is used to filter records.It is used to extract only those records that fulfill a specified condition. 
+
+    Additional Details: Supports operators like AND, OR, NOT, IN, LIKE, BETWEEN.
+
+    ALTER - 
+    The ALTER TABLE statement is used to add, delete, or modify columns in an existing table.
+    The ALTER TABLE statement is also used to add and drop various constraints on an existing table.
+
+    Key Terms - https://www.geeksforgeeks.org/sql/sql-alter-add-drop-modify/ 
+    table_name refers to the name of the table you want to modify.
+    ADD is used to add a new column.
+    DROP is used to remove an existing column.
+    MODIFY is used to change the datatype or definition of an existing column.
+
+    MODIFY COLUMN - Changes the data type or constraints of an existing column.
+
+    SQL ORDER BY - The ORDER BY keyword is used to sort the result-set in ascending or descending order.
+
+GROUP BY -
+    The GROUP BY statement groups rows that have the same values into summary rows, like "find the number of customers in each country".
+
+The GROUP BY statement is often used with aggregate functions (COUNT(), MAX(), MIN(), SUM(), AVG()) to group the result-set by one or more columns.
+
+
+Q13. IN Operator -  
+    https://www.w3schools.com/sql/sql_in.asp 
+    https://www.geeksforgeeks.org/sql/set-vs-select-in-sql/ 
+
+    The IN operator allows you to specify multiple values in a WHERE clause.The IN operator is a shorthand for multiple OR conditions.
+
+    SELECT * FROM Customers
+    WHERE Country IN ('Germany', 'France', 'UK');
+
+
+PRIMARY KEY
+
+
+FOREIGN KEY
