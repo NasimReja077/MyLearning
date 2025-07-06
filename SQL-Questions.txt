@@ -1,6 +1,6 @@
 ✅ Q1. What is SQL?
 Ans:
-SQL is a standard language for storing, manipulating and retrieving data in databases
+SQL is a standard language for storing, manipulating and   data in databases
 
 SQL (Structured Query Language) is a standard programming language used to store, manipulate, and retrieve data from relational databases. It allows users to perform operations like creating databases and tables, inserting, updating, and deleting records, and querying data.
 

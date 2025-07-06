@@ -50,3 +50,81 @@ $ git clone https://github.com/NasimReja077/MyLearning.git
 
 ------------------
 CREATE DATABASE ECART;
+----------------------------------------------
+1. 
+
+RABIUL BISWAS
+4:28 PM
+ORDER TABLE 
+
+OrderID	CustomerID	OrderDate
+10308	2	1996-09-18
+10309	37	1996-09-19
+10310	77	1996-09-20
+
+CUSTOMER TABLE 
+
+CustomerID	CustomerName	ContactName	Country
+1	Alfreds Futterkiste	Maria Anders	Germany
+2	Ana Trujillo Emparedados y helados	Ana Trujillo	Mexico
+3	Antonio Moreno Taquería	Antonio Moreno	Mexico
+
+
+SAMPLE QUERY - 
+SELECT Orders.OrderID, Customers.CustomerName, Orders.OrderDate
+FROM Orders
+INNER JOIN Customers ON Orders.CustomerID=Customers.CustomerID;
+
+INNER JOIN :
+SELECT Orders.*,
+
+
+
+RABIUL BISWAS
+4:28 PM
+ORDER TABLE 
+
+OrderID	CustomerID	OrderDate
+10308	2	1996-09-18
+10309	37	1996-09-19
+10310	77	1996-09-20
+
+CUSTOMER TABLE 
+
+CustomerID	CustomerName	ContactName	Country
+1	Alfreds Futterkiste	Maria Anders	Germany
+2	Ana Trujillo Emparedados y helados	Ana Trujillo	Mexico
+3	Antonio Moreno Taquería	Antonio Moreno	Mexico
+
+
+SAMPLE QUERY - 
+SELECT Orders.OrderID, Customers.CustomerName, Orders.OrderDate
+FROM Orders
+INNER JOIN Customers ON Orders.CustomerID=Customers.CustomerID;
+
+INNER JOIN :
+SELECT Orders.*,
+RABIUL BISWAS
+4:35 PM
+ORDER TABLE 
+
+OrderID	CustomerID	OrderDate
+10308	2	1996-09-18
+10309	37	1996-09-19
+10310	77	1996-09-20
+
+CUSTOMER TABLE 
+
+CustomerID	CustomerName	ContactName	Country
+1	Alfreds Futterkiste	Maria Anders	Germany
+2	Ana Trujillo Emparedados y helados	Ana Trujillo	Mexico
+3	Antonio Moreno Taquería	Antonio Moreno	Mexico
+
+
+SAMPLE QUERY - 
+SELECT Orders.OrderID, Customers.CustomerName, Orders.OrderDate
+FROM Orders
+INNER JOIN Customers ON Orders.CustomerID=Customers.CustomerID;
+
+INNER JOIN :
+SELECT Orders.*,
