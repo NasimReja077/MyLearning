@@ -1,0 +1,20 @@
+RABIUL BISWAS
+9:29 PM
+Authentication
+1.Client sending login request to the server with payload 
+2.payload included client redentials (usename / usr email , Password)
+3. server will check credential is correct or not 
+4. if credential is correct then server generate a access token and send back to the client in the respose 
+5. if credential is not correct server send unsuccessfull response with out accesstoken
+
+Authorization :
+
+endpoint - hhtp:/localhost:8000/get/users/list 
+
+1. Authorization does verify the token fro
+gxe-frof-pxk
+
+
+RABIUL BISWAS
+9:32 PM
+https://www.mongodb.com/docs/manual/crud/
