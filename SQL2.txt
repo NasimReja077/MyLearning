@@ -734,7 +734,7 @@ CREATE TABLE STUDENT(
      DOB DATE);
 
 
-The SQL Unique Key
+# The SQL Unique Key
 Unique Key is just an alternative to the Primary Key; as both Unique and Primary Key constraints ensure uniqueness in a column of the table.
 
 Features of Unique Keys
@@ -764,7 +764,7 @@ NULL Values: A UNIQUE column can contain NULL values. However, most database sys
 
 Index Creation: Similar to primary keys, a UNIQUE constraint automatically creates a unique index on the specified column(s), which helps in faster data retrieval.
 
-Alternate Key: As discussed previously, any candidate key that is not chosen as the primary key is referred to as an "Alternate Key," and these are implemented using the UNIQUE constraint.
+#  Alternate Key: As discussed previously, any candidate key that is not chosen as the primary key is referred to as an "Alternate Key," and these are implemented using the UNIQUE constraint.
 
 When to Use a UNIQUE Constraint:
 When a column needs to uniquely identify records, but it's not the primary way you'll reference the record (e.g., Email address, SocialSecurityNumber, ProductCode).
@@ -848,6 +848,7 @@ DROP INDEX UQ_YourColumnName; -- For MySQL, you drop the index
 
 
 # PRIMARY KEY in SQL
+
 PRIMARY KEY in SQL is a column (or group of columns) that uniquely identifies the records in that table. A primary key must contain unique values and can not have any NULL value.
 
 There can only be one primary key in a table, but that primary key can consist of one or more columns. When there are two or more columns in the primary key it is called a composite key.
@@ -873,7 +874,7 @@ Dropping an SQL Primary Key
 
 
 
-
+# FOREIGN KEY
 The SQL FOREIGN KEY constraint is a crucial element in relational database design. It is used to link two tables together and maintain referential integrity.
 
 A FOREIGN KEY in one table points to a PRIMARY KEY (or a UNIQUE key) in another table. The table containing the foreign key is called the child table, and the table containing the primary key is called the parent table (or referenced table).
@@ -915,6 +916,7 @@ ALTER TABLE ChildTable
 ADD CONSTRAINT FK_ChildTable_ParentTable -- Optional: name the constraint
 FOREIGN KEY (ParentFK)
 REFERENCES ParentTable(ParentID);
+
 3. ON DELETE and ON UPDATE Actions
 These clauses specify what happens to the child table's rows when the corresponding parent row is deleted or updated.
 
@@ -991,49 +993,13 @@ CREATE TABLE IF NOT EXISTS TeacherAssignments (
     ON UPDATE CASCADE -- If a teacher's ID changes, update assignments
 );
 
--- Example 3: Demonstrate Foreign Key violation (will cause an error)
--- This insert will fail because BookID 999 does not exist in the Book table.
--- INSERT INTO Orders_Books (OrderID, BookNumber, BookName, BookClass)
--- VALUES (1015, 999, 'NonExistent Book', 10);
 
--- Example 4: Demonstrate ON DELETE RESTRICT (will cause an error if FK exists)
--- This delete will fail if BookID 101 is referenced in Orders_Books
--- and the FK is ON DELETE RESTRICT (which we set in Example 1).
--- DELETE FROM Book WHERE BookID = 101;
-
--- Example 5: Demonstrate ON UPDATE CASCADE (will succeed if FK exists)
--- This update will change BookID 101 to 201 in both Book and Orders_Books.
--- UPDATE Book SET BookID = 201 WHERE BookID = 101;
-
-You can run these SQL commands in phpMyAdmin. To test the foreign key constraints, you would first need to DROP and CREATE your Orders_Books table with the FOREIGN KEY constraint included, and then try inserting/deleting/updating data that would violate or trigger the constraint.
-
-
--- -------------------------------------------------------------------
--- Section 1: Create Parent Table (Departments)
--- This table will be referenced by the Employees table.
--- -------------------------------------------------------------------
-DROP TABLE IF EXISTS Employees;    -- Drop child table first if it exists
-DROP TABLE IF EXISTS Departments;  -- Then drop parent table
 
 CREATE TABLE Departments (
     DeptID INT NOT NULL PRIMARY KEY, -- Primary Key for Departments table
     DeptName VARCHAR(100) NOT NULL,
     DeptLocation VARCHAR(100)
 );
-
--- Sample Data for Departments
-INSERT INTO Departments (DeptID, DeptName, DeptLocation)
-VALUES
-    (1, 'Human Resources', 'Building A'),
-    (2, 'Engineering', 'Building B'),
-    (3, 'Sales', 'Building C'),
-    (4, 'Marketing', 'Building C'),
-    (5, 'Finance', 'Building A');
-
--- -------------------------------------------------------------------
--- Section 2: Create Child Table (Employees) with Foreign Key and Alternate Key
--- This table references the Departments table.
--- -------------------------------------------------------------------
 CREATE TABLE Employees (
     EmpID INT NOT NULL PRIMARY KEY,
     EmpName VARCHAR(255) NOT NULL UNIQUE, -- EmpName is now an Alternate Key (UNIQUE)
@@ -1046,48 +1012,6 @@ CREATE TABLE Employees (
     ON DELETE RESTRICT               -- Action if a parent row is deleted (prevent deletion by default)
     ON UPDATE CASCADE                -- Action if a parent's primary key is updated (update child's FK)
 );
-
--- Sample Data for Employees
-INSERT INTO Employees (EmpID, EmpName, EmpSalary, DeptID)
-VALUES
-    (101, 'Alice Wonderland', 60000.00, 2), -- Belongs to Engineering (DeptID 2)
-    (102, 'Bob Builder', 75000.00, 2),    -- Belongs to Engineering (DeptID 2)
-    (103, 'Charlie Chaplin', 50000.00, 1), -- Belongs to Human Resources (DeptID 1)
-    (104, 'Diana Ross', 85000.00, 3),     -- Belongs to Sales (DeptID 3)
-    (105, 'Eve Adams', 62000.00, 4),      -- Belongs to Marketing (DeptID 4)
-    (106, 'Frank Sinatra', 70000.00, 1),  -- Belongs to Human Resources (DeptID 1)
-    (107, 'Grace Kelly', 68000.00, NULL), -- Employee not assigned to a department (DeptID is NULL)
-    (108, 'Harry Potter', 90000.00, 2),   -- Belongs to Engineering (DeptID 2)
-    (109, 'Ivy League', 58000.00, 5);     -- Belongs to Finance (DeptID 5)
-
--- -------------------------------------------------------------------
--- Section 3: Demonstrating Foreign Key and Alternate Key Behavior
--- (Uncomment and run these one by one to see their effects/errors)
--- -------------------------------------------------------------------
-
--- Attempt to insert an employee with a non-existent DeptID (will fail due to FK constraint)
--- INSERT INTO Employees (EmpID, EmpName, EmpSalary, DeptID)
--- VALUES (110, 'Invalid Employee', 45000.00, 99); -- DeptID 99 does not exist in Departments
-
--- Attempt to insert an employee with a duplicate EmpName (will fail due to UNIQUE constraint - Alternate Key)
--- INSERT INTO Employees (EmpID, EmpName, EmpSalary, DeptID)
--- VALUES (110, 'Alice Wonderland', 70000.00, 3); -- EmpName 'Alice Wonderland' already exists
-
--- Attempt to delete a department that has associated employees (will fail due to ON DELETE RESTRICT)
--- DELETE FROM Departments WHERE DeptID = 2; -- Engineering has employees (101, 102, 108)
-
--- Update a Department ID (will CASCADE to Employees due to ON UPDATE CASCADE)
--- UPDATE Departments SET DeptID = 20 WHERE DeptID = 2;
--- SELECT * FROM Employees WHERE DeptID = 20; -- Check if employees' DeptID updated
-
--- Delete a department after deleting its associated employees (will succeed)
--- DELETE FROM Employees WHERE DeptID = 1; -- Delete employees from HR first
--- DELETE FROM Departments WHERE DeptID = 1; -- Then delete HR department
-------------------------------------------------
-
-
-
-
 
 -- -------------------------------------------------------------------
 -- Section 1: Update Existing Table (student) with a Foreign Key
@@ -1167,26 +1091,124 @@ VALUES
     (5, 106, '2024-06-20', '2024-06-25'), -- Bob borrowed Fiction
     (6, 107, '2024-06-22', NULL);         -- Mew borrowed Poetry (not returned yet)
 
+-================================================================
 
--- -------------------------------------------------------------------
--- Section 3: Demonstrate Foreign Key Behavior with new tables
--- (Uncomment and run these one by one to see their effects/errors)
--- -------------------------------------------------------------------
+# Features of Foreign Key
+Following is the of features of Foreign Key −
 
--- Attempt to insert a borrow record for a non-existent StudentID (FK violation)
--- INSERT INTO StudentBooks (StudentID, BookID, BorrowDate)
--- VALUES (99, 101, '2024-07-01');
+A Foreign Key is used to reduce the redundancy (or duplicates) in the table.
 
--- Attempt to insert a borrow record for a non-existent BookID (FK violation)
--- INSERT INTO StudentBooks (StudentID, BookID, BorrowDate)
--- VALUES (1, 999, '2024-07-01');
+It helps to normalize (or organize the data in a database) the data in multiple tables.
 
--- Attempt to insert a duplicate borrow record (UNIQUE composite key violation)
--- INSERT INTO StudentBooks (StudentID, BookID, BorrowDate)
--- VALUES (1, 101, '2024-07-01'); -- Nasim already borrowed Adventure (even if returned, the unique key is on StudentID, BookID)
+Syntax
+Following is the basic syntax to add Foreign Key constraints on a column of a table in MySQL database −
 
--- Attempt to delete a student who has borrow records (ON DELETE CASCADE will delete records in StudentBooks)
--- DELETE FROM student WHERE S_ID = 1; -- This will delete Nasim and his StudentBooks entries (101, 105)
+CREATE TABLE table_name (
+    column1 datatype,
+    column2 datatype,
+    ...
+    CONSTRAINT fk_name 
+	FOREIGN KEY (column_name) 
+	REFERENCES referenced_table(referenced_column)
+);
+Example
+Let us create two tables with the names CUSTOMERS and ORDERS. The following query creates a table with the name CUSTOMERS −
 
--- Attempt to delete a book that is currently borrowed (ON DELETE RESTRICT will prevent this)
--- DELETE FROM Book WHERE BookID = 103; -- Reja (S_ID 2) currently has History (BookID 103)
+CREATE TABLE CUSTOMERS(
+   ID INT NOT NULL,
+   NAME VARCHAR (20) NOT NULL,
+   AGE INT NOT NULL,
+   ADDRESS CHAR (25) ,
+   SALARY DECIMAL (18, 2),       
+   PRIMARY KEY (ID)
+);
+
+Now, let us create the ORDERS table. While doing so, we add the foreign key constraint on column CUSTOMER_ID reference on column ID of the CUSTOMERS table as shown in the statement below −
+
+CREATE TABLE ORDERS (
+   ID INT NOT NULL,
+   DATE DATETIME, 
+   CUSTOMER_ID INT,
+   CONSTRAINT FK_CUSTOMER 
+   FOREIGN KEY(CUSTOMER_ID) 
+   REFERENCES CUSTOMERS(ID),
+   AMOUNT DECIMAL,
+   PRIMARY KEY (ID)
+);
+
+Syntax
+Using the ALTER TABLE statement we can add a Foreign Key constraint on an existing column in a table in MySQL database as shown below −
+
+ALTER TABLE TABLE2 
+ADD CONSTRAINT[symbol] 
+FOREIGN KEY(column_name) 
+REFERENCES TABLE1(column_name);
+Here, FK_ORDERS is the name of the foreign key constraint. It is optional to specify the name of a constraint but it comes in handy while dropping the constraint.
+
+Example
+Assume the CUSTOMERS and ORDERS tables have already been created in the SQL database. Now, we will add a Foreign Key Constraint on the ID column of the ORDERS table.
+
+Following is the SQL query to add the foreign key constraint on an the column of an existing table −
+
+ALTER TABLE ORDERS 
+ADD CONSTRAINT FK_ORDERS 
+FOREIGN KEY(ID) 
+REFERENCES CUSTOMERS(ID);
+Output
+
+
+Dropping a FOREIGN KEY
+You can drop the foreign key from a table, without dropping that entire table, using the ALTER TABLE statement.
+
+Syntax
+Following is the syntax to drop the FOREIGN key constraint from the column of the table using the ALTER TABLE statement−
+
+ALTER TABLE table_name DROP FOREIGN KEY (constraint symbol);
+Where, FK_NAME is the name of the foreign key constraint you need to drop.
+
+Example
+The SQL query to drop the foreign key constraint from the column of a table is as follows −
+
+ALTER TABLE ORDERS DROP FOREIGN KEY FK_ORDERS;
+Output
+
+-----------------------------------------------------------------------------------------------------
+Primary Key                                 | |          Foreign Key
+The primary key is always unique.	         |  The foreign key can be duplicated.
+The primary key can not be NULL.	         |  The Foreign can be NULL.
+A table can contain only one Primary Key.	 |  We can have more than one Foreign Key per table.
+-----------------------------------------------------------------------------------------------------
+
+CREATE TABLE STUDENT(
+     STUDENT_ID INT PRIMARY KEY,
+     NAME VARCHAR(20),
+     ADDRESS VARCHAR(20),
+     AGE INT,
+     DOB DATE);
+
+      CREATE TABLE COURSES(
+     COURSE_NAME VARCHAR(20),
+     INSTRUCTOR VARCHAR(20),
+     REFERENCE_ID INT,
+     CONSTRAINT FK_REFER FOREIGN KEY (REFERENCE_ID)
+     REFERENCES STUDENT(STUDENT_ID));
+
+
+     CREATE TABLE Customers (
+  CustomerID INT PRIMARY KEY,
+  CustomerName VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Orders (
+  OrderID INT PRIMARY KEY,
+  OrderNumber INT NOT NULL,
+  CustomerID INT,
+  FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
+
+INSERT INTO Customers (CustomerID, CustomerName)
+VALUES (1, 'John'), (2, 'Jane'), (3, 'Bob');
+
+INSERT INTO Orders (OrderID, OrderNumber, CustomerID)
+VALUES (1, 101, 1), (2, 102, 2), (3, 103, 3);
+----------------------------
