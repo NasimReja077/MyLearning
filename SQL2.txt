@@ -1212,3 +1212,126 @@ VALUES (1, 'John'), (2, 'Jane'), (3, 'Bob');
 INSERT INTO Orders (OrderID, OrderNumber, CustomerID)
 VALUES (1, 101, 1), (2, 102, 2), (3, 103, 3);
 ----------------------------
+
+
+# The SQL Join Clause
+
+CREATE TABLE CUSTOMERS (
+   ID INT NOT NULL,
+   NAME VARCHAR (20) NOT NULL,
+   AGE INT NOT NULL,
+   ADDRESS CHAR (25),
+   SALARY DECIMAL (18, 2),       
+   PRIMARY KEY (ID)
+);
+CREATE TABLE ORDERS (
+   OID INT NOT NULL,
+   DATE VARCHAR (20) NOT NULL,
+   CUSTOMER_ID INT NOT NULL,
+   AMOUNT DECIMAL (18, 2)
+);
+
+SELECT ID, NAME, AGE, AMOUNT
+FROM CUSTOMERS
+JOIN ORDERS
+ON CUSTOMERS.ID = ORDERS.CUSTOMER_ID;
+
+------------------
+Types of joins in SQL
+1. Inner Join
+
+Basic Syntax:
+
+SELECT column_list
+FROM table1
+INNER JOIN table2
+ON table1.column_name = table2.column_name;
+
+------------
+-- Create the Products table
+
+CREATE TABLE Products (
+    ProductID INT PRIMARY KEY,
+    ProductName VARCHAR(255) NOT NULL,
+    Price DECIMAL(10, 2) NOT NULL,
+    StockQuantity INT NOT NULL
+);
+
+-- Insert data into Products
+
+INSERT INTO Products (ProductID, ProductName, Price, StockQuantity) VALUES
+(101, 'Laptop Pro', 1200.00, 50),
+(102, 'Gaming Mouse', 45.50, 200),
+(103, 'Mechanical Keyboard', 89.99, 150),
+(104, 'External SSD 1TB', 99.00, 80),
+(105, 'Webcam HD', 35.00, 100),
+(999, 'Mystery Item', 50.00, 10);
+
+CREATE TABLE Orders (
+    OrderID INT PRIMARY KEY,
+    CustomerID INT NOT NULL,
+    OrderDate DATE NOT NULL,
+    ProductID INT NOT NULL, -- This will link to the Products table
+    Quantity INT NOT NULL,
+    TotalAmount DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
+);
+
+INSERT INTO Orders (OrderID, CustomerID, OrderDate, ProductID, Quantity, TotalAmount) VALUES
+(1, 1001, '2025-06-10', 101, 1, 1200.00),
+(2, 1002, '2025-06-11', 103, 2, 179.98),
+(3, 1001, '2025-06-12', 102, 3, 136.50),
+(4, 1003, '2025-06-13', 104, 1, 99.00),
+(5, 1004, '2025-06-14', 101, 1, 1200.00),
+(6, 1005, '2025-06-15', 105, 2, 70.00),
+(7, 1006, '2025-06-16', 999, 1, 50.00);
+
+Question 1:
+Retrieve a list of all orders, showing the OrderID, the ProductName of the item ordered, and the Quantity ordered.
+
+Answer 1:
+SELECT 
+	orders.OrderID,
+	products.ProductName,
+	orders.Quantity
+FROM orders
+INNER JOIN 
+products ON orders.ProductID = products.ProductID;
+
+Explanation in Detail:
+
+SELECT orders.OrderID, products.ProductName, orders.Quantity:
+
+This is the SELECT clause, which determines what data you want to retrieve from the database.
+
+orders.OrderID: You are asking for the OrderID column, specifically from the orders table. This is important because if both tables had a column with the same name (e.g., ID), you'd need to specify which table it comes from.
+
+products.ProductName: You are requesting the ProductName column from the products table.
+
+orders.Quantity: You are requesting the Quantity column from the orders table.
+
+FROM orders:
+
+This specifies the primary table from which you are starting your query. In this join, orders is considered the "left" table.
+
+INNER JOIN products:
+
+This is the core of the join operation.
+
+INNER JOIN: This keyword indicates that you want to combine rows from orders and products where there are matching values in a specified column in both tables.
+
+products: This is the second table involved in the join, considered the "right" table.
+
+ON orders.ProductID = products.ProductID:
+
+This is the join condition. It tells the database how to match rows between the orders table and the products table.
+
+orders.ProductID: Refers to the ProductID column in the orders table (which is a foreign key).
+
+products.ProductID: Refers to the ProductID column in the products table (which is the primary key).
+
+The INNER JOIN will only return rows where the value in orders.ProductID is exactly the same as the value in products.ProductID. If an OrderID in the orders table has a ProductID that does not exist in the products table, that OrderID will be completely excluded from the final result set.
+
+In simple terms, this query is asking:
+
+"Show me the order number, the name of the product that was ordered, and how many of that product were ordered. Do this by looking at all sales orders, and for each order, find the corresponding product details by matching the Product IDs between the order and the product list. Only show me orders where the product actually exists in my product inventory."

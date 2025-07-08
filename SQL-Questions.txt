@@ -141,3 +141,11 @@ PRIMARY KEY
 
 
 FOREIGN KEY
+
+
+-----------------------------------------------------------------------------------------------------
+Primary Key                                 | |          Foreign Key
+The primary key is always unique.	         |  The foreign key can be duplicated.
+The primary key can not be NULL.	         |  The Foreign can be NULL.
+A table can contain only one Primary Key.	 |  We can have more than one Foreign Key per table.
+-----------------------------------------------------------------------------------------------------
