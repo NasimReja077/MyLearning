@@ -1335,3 +1335,175 @@ The INNER JOIN will only return rows where the value in orders.ProductID is exac
 In simple terms, this query is asking:
 
 "Show me the order number, the name of the product that was ordered, and how many of that product were ordered. Do this by looking at all sales orders, and for each order, find the corresponding product details by matching the Product IDs between the order and the product list. Only show me orders where the product actually exists in my product inventory."
+
+
+Question 2:
+Find all products that have been ordered at least once. Display their ProductName and Price.
+
+
+SELECT DISTINCT         -- 1. Select unique (non-duplicate) combinations of the specified columns.
+ Products.ProductName, -- 2. Select the ProductName column from the 'Products' table.
+ Products.Price        -- 3. Select the Price column from the 'Products' table.
+FROM Products            -- 4. Start the query by looking at the 'Products' table (left table).
+INNER JOIN              -- 5. Specify that we want to perform an INNER JOIN.
+ Orders ON Products.ProductID 
+ = Orders.ProductID;  -- 6. Join 'Products' with 'Orders' where ProductID matches in both tables.
+
+
+Question 3:
+List all orders placed by CustomerID 1001, including the OrderDate, ProductName, and TotalAmount for each.
+
+
+SELECT
+    Orders.OrderDate,
+    Products.ProductName,
+    Orders.TotalAmount
+FROM
+    Orders
+INNER JOIN
+    Products ON Orders.ProductID = Products.ProductID
+WHERE
+    Orders.CustomerID = 1001;
+
+Question 4:
+Show the OrderID, ProductName, and StockQuantity for all items that were ordered, but only for products that currently have less than 100 units in StockQuantity.
+
+Answer 4:
+SELECT
+    Orders.OrderID,
+    Products.ProductName,
+    Products.StockQuantity
+FROM
+    Orders
+INNER JOIN
+    Products ON Orders.ProductID = Products.ProductID
+WHERE
+    Products.StockQuantity < 100;
+
+
+Question 5:
+Calculate the total revenue generated from each product that has been ordered. Display the ProductName and the TotalRevenue.
+
+SELECT
+    Products.ProductName,
+    SUM(Orders.TotalAmount) AS TotalRevenue
+FROM
+    Products
+INNER JOIN
+    Orders ON Products.ProductID = Orders.ProductID
+GROUP BY
+    Products.ProductName
+ORDER BY
+    TotalRevenue DESC;
+
+
+Question 6:
+Find the OrderID, OrderDate, and the ProductName for all orders placed on or after '2025-06-13'.
+
+SELECT
+    Orders.OrderID,
+    Orders.OrderDate,
+    Products.ProductName
+FROM
+    Orders
+INNER JOIN
+    Products ON Orders.ProductID = Products.ProductID
+WHERE
+    Orders.OrderDate >= '2025-06-13';
+
+    OR
+
+SELECT 
+orders.OrderID,
+orders.OrderDate,
+products.ProductID
+FROM
+orders
+INNER JOIN
+products
+ON
+orders.ProductID = products.ProductID
+WHERE orders.OrderDate >= '2025-06-13'
+ORDER BY products.ProductID DESC;
+
+-------
+Question 7:
+List the ProductName and its Price for all products that were part of an order with a Quantity greater than 1. Each product should only appear once.
+
+Answer 7:
+SELECT DISTINCT
+    Products.ProductName,
+    Products.Price
+FROM
+    Products
+INNER JOIN
+    Orders ON Products.ProductID = Orders.ProductID
+WHERE
+    Orders.Quantity > 1;
+
+
+Question 8:
+For each CustomerID that has placed an order, show their CustomerID and the total number of distinct products they have ordered.
+
+Answer 8:
+SELECT
+    Orders.CustomerID,
+    COUNT(DISTINCT Products.ProductName) AS NumberOfDistinctProductsOrdered
+FROM
+    Orders
+INNER JOIN
+    Products ON Orders.ProductID = Products.ProductID
+GROUP BY
+    Orders.CustomerID;
+
+
+Question 9:
+Find ProductName and StockQuantity for all products that have ever been ordered and have a Price greater than $50.00.
+
+SELECT
+    Products.ProductName,
+    Products.StockQuantity
+FROM
+    Products
+INNER JOIN
+    Orders ON Products.ProductID = Orders.ProductID
+WHERE
+    Products.Price > 50.00
+GROUP BY -- Using GROUP BY to ensure unique product details even if ordered multiple times
+    Products.ProductName, Products.StockQuantity;
+
+
+Question 10:
+Retrieve the OrderID and the ProductName for orders where the TotalAmount is higher than the Price of a single unit of that product. This implicitly means Quantity must be greater than 1.
+
+Answer 10:
+SELECT
+    Orders.OrderID,
+    Products.ProductName
+FROM
+    Orders
+INNER JOIN
+    Products ON Orders.ProductID = Products.ProductID
+WHERE
+    Orders.TotalAmount > Products.Price;
+
+
+SQL - Left Join
+
+Easy Example of LEFT JOIN with Products and Orders
+Let's use a very straightforward example to illustrate.
+
+Goal: List all products, and if they have been ordered, show one of the OrderIDs they appear in. Even if a product has never been ordered, it should still be listed.
+
+SQL
+
+SELECT
+    Products.ProductName,
+    Orders.OrderID
+FROM
+    Products -- This is our LEFT table
+LEFT JOIN
+    Orders ON Products.ProductID = Orders.ProductID;
+
+
+SQL - RIGHT JOIN
