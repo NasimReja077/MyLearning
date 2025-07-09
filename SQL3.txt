@@ -1,0 +1,420 @@
+SQL View Query-
+
+Syntax for Creating Views
+The basic syntax for creating a view is as follows:
+
+
+    CREATE VIEW view_name AS 
+    SELECT column1, column2, ...
+    FROM table_name
+    WHERE condition;
+
+Example: Create a view that shows only the employees from the Sales department:
+
+    CREATE VIEW SalesEmployees AS 
+    SELECT employee_id, name, salary 
+    FROM employees 
+    WHERE department = 'Sales';
+
+Example: 
+
+CREATE VIEW OrderProductDetails AS
+SELECT 
+    orders.OrderID,
+    orders.CustomerID,
+    orders.OrderDate,
+    orders.ProductID AS OrderProductID,
+    products.ProductID AS ProductTableID,
+    products.ProductName,
+    products.Price,
+    orders.Quantity,
+    orders.TotalAmount
+FROM
+    orders 
+JOIN
+    products ON orders.ProductID = products.ProductID;
+
+🔹 Question 1: Create a Basic View
+Create a view named SimpleOrdersView that displays only OrderID, CustomerID, and OrderDate from the orders table.
+
+✅ Answer:
+
+CREATE VIEW SimpleOrdersView AS
+SELECT OrderID, CustomerID, OrderDate
+FROM orders;
+
+🔹 Question 2: View with JOIN
+Create a view named OrderDetailsView that joins orders and products to show OrderID, ProductName, Quantity, and TotalAmount.
+✅ Answer:
+
+CREATE VIEW OrderDetailsView AS
+SELECT 
+    o.OrderID,
+    p.ProductName,
+    o.Quantity,
+    o.TotalAmount
+FROM orders o
+JOIN products p ON o.ProductID = p.ProductID;
+
+
+Question 3: View with Filter
+Create a view named HighValueOrders to show orders where TotalAmount is greater than 500.
+
+✅ Answer:
+
+CREATE VIEW HighValueOrders AS
+SELECT * FROM orders
+WHERE TotalAmount > 500;
+
+🔹 Question 4: View with Aggregation
+Create a view named TotalQuantityPerProduct that shows ProductID and the total quantity sold for each product.
+
+✅ Answer:
+
+CREATE VIEW TotalQuantityPerProduct AS
+SELECT ProductID, SUM(Quantity) AS TotalSold
+FROM orders
+GROUP BY ProductID;
+
+----------------
+Updating a View
+A view can be updated with the CREATE OR REPLACE VIEW statement.
+
+SQL CREATE OR REPLACE VIEW Syntax
+
+CREATE OR REPLACE VIEW view_name AS
+SELECT column1, column2, ...
+FROM table_name
+WHERE condition;
+
+
+Modifying a View (ALTER VIEW / CREATE OR REPLACE VIEW)
+Modifying a view means changing its underlying SELECT statement.
+
+CREATE OR REPLACE VIEW (MySQL, PostgreSQL, Oracle): This is the most common and convenient way. If the view doesn't exist, it creates it. If it does exist, it replaces its definition.
+
+SQL
+
+CREATE OR REPLACE VIEW RecentOrderDetails AS
+SELECT
+    O.OrderID,
+    O.OrderDate,
+    O.CustomerID,
+    P.ProductName,
+    P.Price AS UnitPrice,
+    O.Quantity,
+    O.TotalAmount,
+    P.StockQuantity -- Added a new column
+FROM
+    Orders AS O
+INNER JOIN
+    Products AS P ON O.ProductID = P.ProductID
+WHERE
+    O.OrderDate >= '2025-06-01'; -- Changed WHERE condition (removed upper bound)
+ALTER VIEW (SQL Server): SQL Server specifically uses ALTER VIEW.
+
+SQL
+
+ALTER VIEW RecentOrderDetails AS
+SELECT
+    O.OrderID,
+    O.OrderDate,
+    O.CustomerID,
+    P.ProductName,
+    P.Price AS UnitPrice,
+    O.Quantity,
+    O.TotalAmount,
+    P.StockQuantity
+FROM
+    Orders AS O
+INNER JOIN
+    Products AS P ON O.ProductID = P.ProductID
+WHERE
+    O.OrderDate >= '2025-06-01';
+
+
+---------------------
+SQL Dropping a View
+A view is deleted with the DROP VIEW statement.
+
+SQL DROP VIEW Syntax
+DROP VIEW view_name;
+
+Let's talk about SQL Views. Views are a fundamental concept in relational databases, providing a powerful way to manage, simplify, and secure data access.
+
+What is a SQL View?
+In SQL, a View is a virtual table based on the result-set of a SQL query. It's essentially a stored query that can be treated like a table.
+
+Virtual Table: A view does not store data itself (except for materialized views, which are a specialized type and beyond the scope of a basic explanation). Instead, it pulls data from its underlying base tables every time it is queried.
+
+Always Up-to-Date: Because a view doesn't store data, it always reflects the current data in its base tables. If the data in the underlying tables changes, the data presented by the view changes automatically.
+
+Result of a Query: A view is defined by a SELECT statement. This SELECT statement can involve joins, WHERE clauses, aggregations, and more.
+
+Why Use Views? (Benefits)
+Views offer several significant advantages:
+
+Security: You can grant users access to specific views instead of granting them direct access to the underlying tables. This allows you to restrict what columns and rows a user can see, protecting sensitive data. For example, a view could expose employee names and departments but hide salaries and personal addresses.
+
+Simplicity: Complex queries (involving multiple joins, aggregations, or subqueries) can be stored as a view. Users can then query this view as if it were a simple table, abstracting away the complexity of the underlying query.
+
+Consistency: By defining a view, you ensure that all users querying the view are seeing data derived in the same way. This prevents errors that might arise from different users writing slightly different versions of the same complex query.
+
+Data Abstraction: Views provide a layer of abstraction between your application code and the physical database schema. If the underlying table schema changes (e.g., a column is renamed, or tables are split), you might only need to modify the view definition, rather than rewriting every application query that accesses those tables.
+
+Reusability: Once defined, a view can be used in other queries, joins, or even in the definition of other views.
+
+Creating a View (CREATE VIEW)
+The basic syntax for creating a view is:
+
+SQL
+
+CREATE VIEW view_name AS
+SELECT column1, column2, ...
+FROM table1
+JOIN table2 ON condition
+WHERE condition;
+view_name: The name you want to give your virtual table.
+
+SELECT ... FROM ... WHERE ...: Any valid SELECT statement. This query defines the data that the view will expose.
+
+Example using Your Products and Orders Tables
+Let's create a view that shows detailed information about recent product orders, including product name and total amount.
+
+Your Tables for Reference:
+
+Products Table:
+| ProductID | ProductName         | Price    | StockQuantity |
+| :-------- | :------------------ | :------- | :------------ |
+| 101       | Laptop Pro          | 1200.00  | 50            |
+| 102       | Gaming Mouse        | 45.50    | 200           |
+| 103       | Mechanical Keyboard | 89.99    | 150           |
+| 104       | External SSD 1TB    | 99.00    | 80            |
+| 105       | Webcam HD           | 35.00    | 100           |
+| 999       | Mystery Item        | 50.00    | 10            |
+| 106       | Smart Watch         | 250.00   | 30            |
+
+Orders Table:
+| OrderID | CustomerID | OrderDate  | ProductID | Quantity | TotalAmount |
+| :------ | :--------- | :--------- | :-------- | :------- | :---------- |
+| 1       | 1001       | 2025-06-10 | 101       | 1        | 1200.00     |
+| 2       | 1002       | 2025-06-11 | 103       | 2        | 179.98      |
+| 3       | 1001       | 2025-06-12 | 102       | 3        | 136.50      |
+| 4       | 1003       | 2025-06-13 | 104       | 1        | 99.00       |
+| 5       | 1004       | 2025-06-14 | 101       | 1        | 1200.00     |
+| 6       | 1005       | 2025-06-15 | 105       | 2        | 70.00       |
+| 7       | 1006       | 2025-06-16 | 999       | 1        | 50.00       |
+| 8       | 1007       | 2025-06-17 | 777       | 1        | 100.00      |
+
+Create View Example:
+
+Let's create a view named RecentOrderDetails that combines product and order information for orders placed in June 2025.
+
+SQL
+
+CREATE VIEW RecentOrderDetails AS
+SELECT
+    O.OrderID,
+    O.OrderDate,
+    O.CustomerID,
+    P.ProductName,
+    P.Price AS UnitPrice,
+    O.Quantity,
+    O.TotalAmount
+FROM
+    Orders AS O
+INNER JOIN
+    Products AS P ON O.ProductID = P.ProductID
+WHERE
+    O.OrderDate >= '2025-06-01' AND O.OrderDate <= '2025-06-30';
+Querying a View (SELECT FROM View)
+Once a view is created, you can query it just like you would a regular table.
+
+SQL
+
+SELECT
+    OrderID,
+    OrderDate,
+    ProductName,
+    Quantity,
+    TotalAmount
+FROM
+    RecentOrderDetails
+WHERE
+    Quantity > 1;
+Result of Querying RecentOrderDetails (with Quantity > 1):
+
+OrderID
+
+OrderDate
+
+ProductName
+
+Quantity
+
+TotalAmount
+
+2
+
+2025-06-11
+
+Mechanical Keyboard
+
+2
+
+179.98
+
+3
+
+2025-06-12
+
+Gaming Mouse
+
+3
+
+136.50
+
+6
+
+2025-06-15
+
+Webcam HD
+
+2
+
+70.00
+
+
+Export to Sheets
+Modifying a View (ALTER VIEW / CREATE OR REPLACE VIEW)
+Modifying a view means changing its underlying SELECT statement.
+
+CREATE OR REPLACE VIEW (MySQL, PostgreSQL, Oracle): This is the most common and convenient way. If the view doesn't exist, it creates it. If it does exist, it replaces its definition.
+
+SQL
+
+CREATE OR REPLACE VIEW RecentOrderDetails AS
+SELECT
+    O.OrderID,
+    O.OrderDate,
+    O.CustomerID,
+    P.ProductName,
+    P.Price AS UnitPrice,
+    O.Quantity,
+    O.TotalAmount,
+    P.StockQuantity -- Added a new column
+FROM
+    Orders AS O
+INNER JOIN
+    Products AS P ON O.ProductID = P.ProductID
+WHERE
+    O.OrderDate >= '2025-06-01'; -- Changed WHERE condition (removed upper bound)
+ALTER VIEW (SQL Server): SQL Server specifically uses ALTER VIEW.
+
+SQL
+
+ALTER VIEW RecentOrderDetails AS
+SELECT
+    O.OrderID,
+    O.OrderDate,
+    O.CustomerID,
+    P.ProductName,
+    P.Price AS UnitPrice,
+    O.Quantity,
+    O.TotalAmount,
+    P.StockQuantity
+FROM
+    Orders AS O
+INNER JOIN
+    Products AS P ON O.ProductID = P.ProductID
+WHERE
+    O.OrderDate >= '2025-06-01';
+
+
+Dropping a View (DROP VIEW)
+To remove a view from the database:
+
+DROP VIEW view_name;
+Example:
+
+DROP VIEW RecentOrderDetails;
+
+1. Simple Views
+
+A simple view is based on a single table and does not involve any complex logic such as joins or aggregations. Simple views are usually updatable.
+
+.Based on a single table
+.No GROUP BY, JOIN, or aggregate functions
+.Can be updatable
+
+Example: Create a simple view showing the names and salaries of all employees:
+
+
+    CREATE VIEW EmployeeSalaries AS 
+    SELECT name, salary 
+    FROM employees;
+
+2. Complex Views
+
+A complex view involves multiple tables, joins, or aggregations, and is usually not updatable. These views are useful for presenting complex relationships or aggregated data in a simplified way.
+
+.Based on multiple tables (JOINs)
+.May contain aggregates, GROUP BY, or DISTINCT
+.Not updatable
+
+Example: Create a complex view that shows the total salary for each department:
+
+
+    CREATE VIEW DepartmentSalaries AS 
+    SELECT department, SUM(salary) AS total_salary 
+    FROM employees 
+    GROUP BY department;
+
+
+CREATE VIEW OrderSummary AS
+SELECT 
+    o.OrderID, p.ProductName, o.Quantity
+FROM orders o
+JOIN products p ON o.ProductID = p.ProductID;
+
+
+3. Inline Views
+
+An inline view is not a permanent view but a subquery in the FROM clause of a SQL query. It behaves like a temporary view and can simplify the query structure.
+
+.Inline View (also known as a Subquery in FROM)
+.Temporary view inside a SELECT query
+.Not stored in the database
+
+Example: Use an inline view to find the average salary of employees in each department:
+
+
+    SELECT department, avg_salary 
+    FROM (SELECT department, AVG(salary) AS avg_salary 
+          FROM employees 
+          GROUP BY department);
+    
+
+SELECT *
+FROM (
+    SELECT ProductID, Price FROM products WHERE Price > 100
+) AS HighPriceProducts;
+
+
+4. Materialized Views
+
+A materialized view stores the results of a query physically, unlike regular views that store only the query. Materialized views are used when performance is critical, as they allow faster access to precomputed data. However, they need to be refreshed periodically to ensure the data is up-to-date.
+
+.Materialized View (Not supported in MySQL, but in Oracle/PostgreSQL)
+.Physically stores the query result
+.Needs to be refreshed manually or automatically
+.Improves performance for complex queries
+
+Example: Create a materialized view for quickly accessing total sales data:
+
+
+    CREATE MATERIALIZED VIEW TotalSales AS 
+    SELECT SUM(amount) AS total_sales 
+    FROM sales;
+
+https://www.slideshare.net/slideshow/sql-ch-13-sqlviews/8278241
