@@ -1,0 +1,261 @@
+🧩 1. Database
+A MongoDB database is a container for collections, much like a database in MySQL or PostgreSQL. Each database holds its own collections and documents.
+
+🔹 Key Points:
+One MongoDB server can host multiple databases.
+
+Each database is independent of others.
+
+MongoDB creates the database when you first store data in it.
+
+📌 Syntax:
+javascript
+Copy
+Edit
+use myDatabase
+This command switches to or creates a database named myDatabase.
+
+📚 2. Collection
+A collection is a group of MongoDB documents, similar to a table in a relational database.
+
+🔹 Key Points:
+A collection exists within a database.
+
+Collections hold documents (not rows).
+
+Documents inside a collection can have different fields and structures (unlike SQL tables).
+
+📌 Syntax:
+javascript
+Copy
+Edit
+db.createCollection("users")
+This creates a new collection named users.
+
+OR simply:
+
+javascript
+Copy
+Edit
+db.users.insertOne({ name: "Nasim" })
+This creates the users collection if it doesn’t exist and inserts a document into it.
+
+📄 3. Document
+A document is the basic unit of data in MongoDB. It’s a JSON-like object (BSON – Binary JSON) that stores data in key-value pairs.
+
+🔹 Key Points:
+Each document is like a row in a table.
+
+Documents are schema-less, meaning fields can vary from document to document.
+
+Each document must have a unique _id field (automatically generated if not provided).
+
+📌 Example:
+json
+Copy
+Edit
+{
+  "_id": ObjectId("64ee2a7e2fcf7123abc12345"),
+  "name": "Nasim",
+  "age": 23,
+  "skills": ["MongoDB", "React", "Node.js"]
+}
+📌 Insert Document:
+javascript
+Copy
+Edit
+db.users.insertOne({
+  name: "Nasim",
+  age: 23,
+  skills: ["MongoDB", "React"]
+})
+🧠 Summary Table:
+Concept	MongoDB Equivalent	SQL Equivalent	Structure Example
+Database	use myDB	USE myDB;	myDB contains collections
+Collection	db.users	users table	Collection of user documents
+Document	{name: "Nasim"}	row	JSON-like key-value pair object
+
+
+🔍 1. List All Databases
+📌 Command:
+javascript
+Copy
+Edit
+show dbs
+✅ Example Output:
+arduino
+Copy
+Edit
+admin      0.000GB
+config     0.000GB
+myDB       0.001GB
+test       0.000GB
+📝 This lists all databases present on your MongoDB server.
+
+📚 2. Switch to a Database
+Before listing collections or documents, switch to your target database:
+
+javascript
+Copy
+Edit
+use myDB
+📁 3. List All Collections in the Database
+📌 Command:
+javascript
+Copy
+Edit
+show collections
+✅ Example Output:
+bash
+Copy
+Edit
+users
+products
+orders
+📝 This shows all collections (similar to tables) in the selected myDB.
+
+📄 4. List All Documents in a Collection
+To see all documents inside a collection, use:
+
+📌 Command:
+javascript
+Copy
+Edit
+db.collection_name.find()
+✅ Example:
+javascript
+Copy
+Edit
+db.users.find()
+📦 Example Output:
+json
+Copy
+Edit
+[
+  {
+    "_id": ObjectId("66cb889ac3cfa08f12345678"),
+    "name": "Nasim",
+    "age": 23,
+    "skills": ["MongoDB", "React"]
+  },
+  {
+    "_id": ObjectId("66cb889ac3cfa08f12345679"),
+    "name": "Reja",
+    "age": 25,
+    "skills": ["Node.js", "Express"]
+  }
+]
+You can also format documents better using:
+
+javascript
+Copy
+Edit
+db.users.find().pretty()
+🧭 Visual Diagram (Conceptual)
+plaintext
+Copy
+Edit
+MongoDB Server
+│
+├── Database: myDB
+│   ├── Collection: users
+│   │   ├── Document: { name: "Nasim", age: 23 }
+│   │   ├── Document: { name: "Reja", age: 25 }
+│   └── Collection: products
+│       ├── Document: { title: "Book", price: 199 }
+│       ├── Document: { title: "Pen", price: 20 }
+│
+├── Database: test
+│   └── Collection: sample
+🧠 BONUS – Commands Recap
+Task	Command
+List all databases	show dbs
+Switch to a database	use myDB
+List collections in a DB	show collections
+Find all documents	db.collection.find()
+Pretty print documents	db.collection.find().pretty()
+
+
+🔄 MongoDB CRUD Operations
+📌 C — Create
+📌 R — Read
+📌 U — Update
+📌 D — Delete
+We'll use a sample collection called users.
+
+1️⃣ CREATE – Insert Data into a Collection
+➤ Insert One Document
+javascript
+Copy
+Edit
+db.users.insertOne({
+  name: "Nasim",
+  age: 23,
+  city: "Kolkata"
+})
+➤ Insert Many Documents
+javascript
+Copy
+Edit
+db.users.insertMany([
+  { name: "Reja", age: 25, city: "Delhi" },
+  { name: "Ali", age: 28, city: "Mumbai" }
+])
+2️⃣ READ – Find/Query Documents
+➤ Find All Documents
+javascript
+Copy
+Edit
+db.users.find()
+➤ Find One Document
+javascript
+Copy
+Edit
+db.users.findOne({ name: "Nasim" })
+➤ Filter with Condition
+javascript
+Copy
+Edit
+db.users.find({ age: { $gt: 24 } }) // age > 24
+➤ Select Specific Fields
+javascript
+Copy
+Edit
+db.users.find({}, { name: 1, city: 1, _id: 0 }) // Show only name & city
+3️⃣ UPDATE – Modify Documents
+➤ Update One Document
+javascript
+Copy
+Edit
+db.users.updateOne(
+  { name: "Nasim" },                     // Filter
+  { $set: { city: "Howrah", age: 24 } }  // Update
+)
+➤ Update Many Documents
+javascript
+Copy
+Edit
+db.users.updateMany(
+  { city: "Delhi" },
+  { $set: { city: "New Delhi" } }
+)
+4️⃣ DELETE – Remove Documents
+➤ Delete One Document
+javascript
+Copy
+Edit
+db.users.deleteOne({ name: "Ali" })
+➤ Delete Many Documents
+javascript
+Copy
+Edit
+db.users.deleteMany({ city: "Mumbai" })
+🧠 Bonus: Query Operators Cheat Sheet
+Operator	Meaning	Example
+$gt	Greater than	{ age: { $gt: 20 } }
+$lt	Less than	{ age: { $lt: 30 } }
+$eq	Equal to	{ age: { $eq: 23 } }
+$ne	Not equal	{ age: { $ne: 25 } }
+$in	In array	{ city: { $in: ["Delhi", "Mumbai"] } }
+$and	Logical AND	{ $and: [{ age: 23 }, { city: "Kolkata" }] }
+$or	Logical OR	{ $or: [{ age: 23 }, { age: 25 }] }
