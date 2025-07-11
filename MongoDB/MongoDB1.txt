@@ -259,3 +259,361 @@ $ne	Not equal	{ age: { $ne: 25 } }
 $in	In array	{ city: { $in: ["Delhi", "Mumbai"] } }
 $and	Logical AND	{ $and: [{ age: 23 }, { city: "Kolkata" }] }
 $or	Logical OR	{ $or: [{ age: 23 }, { age: 25 }] }
+
+
+
+🧬 MongoDB Data Types (with Examples)
+MongoDB stores data in BSON format (Binary JSON), which supports more types than standard JSON.
+
+Here's a list of commonly used data types:
+
+1️⃣ String (String)
+Used to store text.
+
+Most commonly used data type.
+
+javascript
+Copy
+Edit
+{ "name": "Nasim" }
+2️⃣ Integer (Int32, Int64)
+Used to store whole numbers.
+
+javascript
+Copy
+Edit
+{ "age": 23 }
+3️⃣ Double (Double)
+Stores floating point numbers (decimal values).
+
+javascript
+Copy
+Edit
+{ "rating": 4.5 }
+4️⃣ Boolean (Boolean)
+Used to store true or false.
+
+javascript
+Copy
+Edit
+{ "isActive": true }
+5️⃣ Array (Array)
+Stores multiple values in a list.
+
+javascript
+Copy
+Edit
+{ "skills": ["MongoDB", "React", "Node.js"] }
+6️⃣ Object (Embedded Document)
+A document within a document.
+
+javascript
+Copy
+Edit
+{
+  "address": {
+    "city": "Kolkata",
+    "pin": 700001
+  }
+}
+7️⃣ ObjectId (ObjectId)
+Unique identifier for documents.
+
+Auto-generated if not provided.
+
+javascript
+Copy
+Edit
+{ "_id": ObjectId("66cb889ac3cfa08f12345678") }
+8️⃣ Date (Date)
+Stores date and time.
+
+javascript
+Copy
+Edit
+{ "createdAt": ISODate("2025-07-10T10:00:00Z") }
+You can insert current date using:
+
+javascript
+Copy
+Edit
+{ "createdAt": new Date() }
+9️⃣ Null (Null)
+Represents a null or missing value.
+
+javascript
+Copy
+Edit
+{ "middleName": null }
+🔟 Binary Data (BinData)
+Stores binary data like images, files, etc.
+
+javascript
+Copy
+Edit
+{ "file": BinData(0, "Base64DataHere") }
+1️⃣1️⃣ Timestamp (Timestamp)
+Used internally by MongoDB for replication and operations.
+
+Rarely used directly in application development.
+
+🧠 Bonus: Check Data Type of a Field
+javascript
+Copy
+Edit
+db.users.find({ "age": { $type: "int" } })       // or use number code: $type: 16
+📋 Data Type Codes Table (for $type queries)
+Type	Name	Code
+Double	double	1
+String	string	2
+Object	object	3
+Array	array	4
+Binary data	binData	5
+Undefined	undefined	6
+ObjectId	objectId	7
+Boolean	bool	8
+Date	date	9
+Null	null	10
+Regular Exp	regex	11
+JavaScript	js	13
+Int32	int	16
+Timestamp	timestamp	17
+Int64	long	18
+Decimal128	decimal	19
+
+
+
+🔧 MongoDB Operators – Categories
+MongoDB operators are classified into:
+
+🔍 Query Operators (used in find)
+
+✍️ Update Operators (used in update)
+
+🧠 Aggregation Operators (used in aggregate)
+
+🔗 Projection Operators (used to select fields)
+
+🔍 1. Query Operators
+These are used to filter documents in find(), delete(), etc.
+
+Operator	Description	Example
+$eq	Equals	{ age: { $eq: 23 } }
+$ne	Not equals	{ name: { $ne: "Nasim" } }
+$gt	Greater than	{ age: { $gt: 20 } }
+$lt	Less than	{ age: { $lt: 30 } }
+$gte	Greater than or equal	{ age: { $gte: 18 } }
+$lte	Less than or equal	{ age: { $lte: 25 } }
+$in	Matches any value in array	{ city: { $in: ["Delhi", "Kolkata"] } }
+$nin	Not in array	{ city: { $nin: ["Mumbai"] } }
+$exists	Field exists or not	{ phone: { $exists: true } }
+$regex	Pattern matching	{ name: { $regex: "^N" } }
+$and	Logical AND	{ $and: [{ age: 23 }, { city: "Kolkata" }] }
+$or	Logical OR	{ $or: [{ city: "Delhi" }, { age: 23 }] }
+
+✍️ 2. Update Operators
+Used in updateOne(), updateMany(), etc.
+
+Operator	Description	Example
+$set	Set field to a value	{ $set: { age: 24 } }
+$unset	Remove a field	{ $unset: { city: "" } }
+$inc	Increment a field	{ $inc: { age: 1 } }
+$mul	Multiply a field value	{ $mul: { score: 2 } }
+$rename	Rename a field	{ $rename: { "city": "location" } }
+$push	Add item to array	{ $push: { skills: "Express" } }
+$pop	Remove first/last item from array	{ $pop: { skills: -1 } } (-1 = first, 1 = last)
+$pull	Remove matching value from array	{ $pull: { skills: "Node.js" } }
+$addToSet	Add item to array if not exists	{ $addToSet: { skills: "React" } }
+$currentDate	Set current date/time	{ $currentDate: { lastModified: true } }
+
+🧠 3. Aggregation Operators
+Used in the Aggregation Pipeline (db.collection.aggregate()).
+
+Operator	Description
+$match	Filters documents (like find)
+$group	Groups documents by fields
+$project	Select/rename fields
+$sort	Sorts results
+$limit	Limits result count
+$skip	Skips documents
+$sum	Sums values
+$avg	Averages values
+$min / $max	Minimum/maximum value
+$count	Counts documents in pipeline
+
+💡 These are used for data processing, like SQL GROUP BY, SUM(), etc.
+
+🔎 4. Projection Operators
+Used to control which fields are returned in queries:
+
+Operator	Description	Example
+1	Include field	{ name: 1, age: 1 }
+0	Exclude field	{ _id: 0 }
+$slice	Return part of array	{ comments: { $slice: 5 } }
+$elemMatch	Match array element	{ scores: { $elemMatch: { score: { $gt: 80 } } } }
+
+🧪 Sample Query Using Operators:
+javascript
+Copy
+Edit
+db.users.find({
+  $and: [
+    { age: { $gte: 18, $lte: 30 } },
+    { city: { $in: ["Kolkata", "Delhi"] } }
+  ]
+})
+📌 Summary Sheet (Cheat Code)
+Category	Common Operators
+Query	$eq, $gt, $lt, $in, $regex, $and, $or
+Update	$set, $unset, $inc, $push, $pull
+Aggregation	$match, $group, $sum, $avg, $project
+Projection	1, 0, $slice, $elemMatch
+
+
+
+
+What is Aggregation in MongoDB?
+Aggregation is a way to transform, filter, and analyze data from a MongoDB collection, similar to SQL's:
+
+sql
+Copy
+Edit
+SELECT ... FROM ... WHERE ... GROUP BY ... HAVING ...
+In MongoDB, it’s done using the Aggregation Pipeline — a series of stages that process documents.
+
+🛠️ Aggregation Pipeline Syntax:
+javascript
+Copy
+Edit
+db.collection.aggregate([
+  { /* stage 1 */ },
+  { /* stage 2 */ },
+  ...
+])
+Each stage takes input documents, processes them, and passes the output to the next stage.
+
+📊 Common Aggregation Pipeline Stages
+Stage	Description
+$match	Filters documents (like WHERE)
+$group	Groups data and performs operations
+$project	Selects, adds, or reshapes fields
+$sort	Sorts documents
+$limit	Limits the number of documents
+$skip	Skips a number of documents
+$count	Counts the documents
+$unwind	Breaks arrays into separate documents
+$lookup	Joins documents from another collection
+
+✅ Basic Aggregation Example
+Suppose you have a users collection:
+
+json
+Copy
+Edit
+[
+  { name: "Nasim", city: "Kolkata", age: 23 },
+  { name: "Reja", city: "Delhi", age: 25 },
+  { name: "Ali", city: "Kolkata", age: 30 }
+]
+👉 Count users by city:
+javascript
+Copy
+Edit
+db.users.aggregate([
+  { $group: { _id: "$city", totalUsers: { $sum: 1 } } }
+])
+🧾 Output:
+json
+Copy
+Edit
+[
+  { "_id": "Kolkata", "totalUsers": 2 },
+  { "_id": "Delhi", "totalUsers": 1 }
+]
+📦 $match Stage
+Filter documents before processing:
+
+javascript
+Copy
+Edit
+{ $match: { city: "Kolkata" } }
+📦 $group Stage
+Group documents and perform aggregations:
+
+javascript
+Copy
+Edit
+{ 
+  $group: {
+    _id: "$city",
+    total: { $sum: 1 },
+    avgAge: { $avg: "$age" }
+  }
+}
+📦 $project Stage
+Include, exclude, rename fields, or create computed fields:
+
+javascript
+Copy
+Edit
+{
+  $project: {
+    _id: 0,
+    name: 1,
+    city: 1,
+    isAdult: { $cond: [{ $gte: ["$age", 18] }, true, false] }
+  }
+}
+📦 $sort, $limit, $skip
+javascript
+Copy
+Edit
+{ $sort: { age: -1 } }   // Descending
+{ $limit: 5 }
+{ $skip: 10 }
+🔗 $lookup – JOIN Collections
+Suppose you have:
+
+orders collection with a userId
+
+users collection
+
+Join them:
+
+javascript
+Copy
+Edit
+db.orders.aggregate([
+  {
+    $lookup: {
+      from: "users",
+      localField: "userId",
+      foreignField: "_id",
+      as: "userDetails"
+    }
+  }
+])
+🧪 Full Example: Average Age by City (Only if age > 20)
+javascript
+Copy
+Edit
+db.users.aggregate([
+  { $match: { age: { $gt: 20 } } },
+  { $group: {
+      _id: "$city",
+      averageAge: { $avg: "$age" },
+      count: { $sum: 1 }
+    }
+  },
+  { $sort: { averageAge: -1 } }
+])
+📌 Aggregation Use Cases:
+Group sales by month/year
+
+Count users by country/city
+
+Calculate total revenue
+
+Join two collections (like SQL JOIN)
+
+Filter, transform, and reshape data
