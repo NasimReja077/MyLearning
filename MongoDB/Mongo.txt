@@ -1,0 +1,312 @@
+C:\Users\User>mongosh
+----------------Create Database-------
+test> show dbs / 
+---------------------Drop Database---------
+test> use myTestDatabase
+switched to db myTestDatabase
+
+myTestDatabase> db.dropDatabase()// Deletes / Drop the current database (myTestDatabase) along with all its collections and data.
+{ ok: 1, dropped: 'myTestDatabase' }
+myTestDatabase>
+
+Switch to the Correct Database -> use test
+View All Collections - show collections
+View All Documents in Teacher - db.Teacher.find()
+
+--------------------------------Create Collection-------------
+db.createCollection("mycollection")
+{ "ok" : 1 }
+--You simply start inserting data. When you use methods like insertOne() or insertMany() on a collection name that doesn't yet exist within your selected database, MongoDB will create that collection for you.--->
+
+test> db.student.insertOne({name: "Raju", age: 25}) // Insert Document in student Collection
+->
+{
+  acknowledged: true,
+  insertedId: ObjectId('687244b7958465b411718dc4')
+}
+
+
+test> db.studnt.find() // This returns nothing because there is no collection named studnt (typo).
+
+
+test> db.student.find()
+
+[
+  { _id: ObjectId('687244b7958465b411718dc4'), name: 'Raju', age: 25 }
+]
+
+
+test> show collections  // to list all collections
+student 
+
+test> show dbs   // to see data in Teacher
+admin   40.00 KiB
+config  72.00 KiB
+local   40.00 KiB
+test    40.00 KiB
+
+test> use test
+already on db test
+
+test> db.Teacher
+test.Teacher
+
+test> show collections
+student
+
+-------Drop Collection----
+db.COLLECTION_NAME.drop()
+
+
+
+test> db.Teacher.insertMany([])  //Empty Array
+MongoInvalidArgumentError: Invalid BulkOperation, Batch cannot be empty
+
+test> db.Teacher.insertMany(  // Insert Multiple Documents in Teacher Collection
+... [
+... {"Name":"Nasim"},
+... {"Name":"Joy"}
+... ]
+... )
+->
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('68724726958465b411718dc5'),
+    '1': ObjectId('68724726958465b411718dc6')
+  }
+}
+
+
+test> show collections
+->
+student
+Teacher
+
+test> db.Teacher.find() // Retrieve All Documents from Teacher
+
+[
+  { _id: ObjectId('68724726958465b411718dc5'), Name: 'Nasim' },
+  { _id: ObjectId('68724726958465b411718dc6'), Name: 'Joy' }
+]
+
+test> db.student.find()
+
+[
+  { _id: ObjectId('687244b7958465b411718dc4'), name: 'Raju', age: 25 }
+]
+
+test> db.Teacher.find().pretty() // If you ever want to pretty-print the find() result
+
+---------------------Insert Document------------
+The insert() Method -> To insert data into MongoDB collection, you need to use MongoDB's insert() or save() method.
+Syntax:- 
+The basic syntax of insert() command is as follows −
+>db.COLLECTION_NAME.insert(document)
+
+test> use car_dealership
+switched to db car_dealership
+
+---------insertOne()------
+car_dealership> db.cars.insertOne({
+...     "maker": "Tata",
+...     "model": "Nexon",
+...     "fuel_type": "Petrol",
+...     "transmission": "Automatic",
+...     "engine": {
+...         "type": "Turbocharged",
+...         "cc": 1199,
+...         "torque": "170 Nm"
+...     },
+...     "features": [
+...         "Touchscreen",
+...         "Reverse Camera",
+...         "Bluetooth Connectivity"
+...     ],
+...     "sunroof": false,
+...     "airbags": 2
+})
+
+car_dealership> db.cars.find()
+[
+  {
+    _id: ObjectId('68726925958465b411718dc7'),
+    maker: 'Tata',
+    model: 'Nexon',
+    fuel_type: 'Petrol',
+    transmission: 'Automatic',
+    engine: { type: 'Turbocharged', cc: 1199, torque: '170 Nm' },
+    features: [ 'Touchscreen', 'Reverse Camera', 'Bluetooth Connectivity' ],
+    sunroof: false,
+    airbags: 2
+  }
+]
+
+-------------insertMany()-----------
+car_dealership> db.cars.insertMany([
+...     {
+...         "maker": "Hyundai",
+...         "model": "Creta",
+...         "fuel_type": "Diesel",
+...         "transmission": "Manual",
+...         "engine": {
+...             "type": "Naturally Aspirated",
+...             "cc": 1493,
+...             "torque": "250 Nm"
+...         },
+...         "features": [
+...             "Sunroof",
+...             "Leather Seats",
+...             "Wireless Charging",
+...             "Ventilated Seats",
+...             "Bluetooth"
+...         ],
+...         "sunroof": true,
+...         "airbags": 6
+...     },
+...     {
+...         "maker": "Maruti Suzuki",
+...         "model": "Baleno",
+...         "fuel_type": "Petrol",
+...         "transmission": "Automatic",
+...         "engine": {
+...             "type": "Naturally Aspirated",
+...             "cc": 1197,
+...             "torque": "113 Nm"
+...         },
+...         "features": [
+...             "Projector Headlamps",
+...             "Apple CarPlay",
+...             "ABS"
+...         ],
+...         "sunroof": false,
+...         "airbags": 2
+...     },
+...     {
+...         "maker": "Mahindra",
+...         "model": "XUV500",
+...         "fuel_type": "Diesel",
+...         "transmission": "Manual",
+...         "engine": {
+...             "type": "Turbocharged",
+...             "cc": 2179,
+...             "torque": "360 Nm"
+...         },
+...         "features": [
+...             "All-Wheel Drive",
+...             "Navigation System",
+...             "Cruise Control"
+...         ],
+...         "sunroof": true,
+...         "airbags": 6
+...     },
+...     {
+...         "maker": "Honda",
+...         "model": "City",
+...         "fuel_type": "Petrol",
+...         "transmission": "Automatic",
+...         "engine": {
+...             "type": "Naturally Aspirated",
+...             "cc": 1498,
+...             "torque": "145 Nm"
+...         },
+...         "features": [
+...             "Keyless Entry",
+...             "Auto AC",
+...             "Multi-angle Rearview Camera"
+...         ],
+...         "sunroof": false,
+...         "airbags": 4
+...     }
+... ])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('68727132958465b411718dc8'),
+    '1': ObjectId('68727132958465b411718dc9'),
+    '2': ObjectId('68727132958465b411718dca'),
+    '3': ObjectId('68727132958465b411718dcb')
+  }
+}
+------------find() Operation------------
+# Basic Syntax
+The find() method takes two optional arguments:
+
+# query (or filter): A document that specifies the selection criteria (which documents to return). If omitted or an empty document ({}), all documents in the collection are returned.
+projection: A document that specifies which fields to include or exclude from the returned documents.
+
+# The general syntax is:
+db.collection.find(query, projection)
+------------
+use car_dealership // Ensure you are in the correct database
+db.cars.find({})
+// Or simply:
+db.cars.find()
+-------------
+// Find cars made by "Honda"
+db.cars.find({ maker: "Honda" })
+
+// Find cars with "Petrol" fuel type and "Automatic" transmission (AND condition implicitly)
+db.cars.find({ fuel_type: "Petrol", transmission: "Automatic" })
+
+// Find cars with a specific engine type
+db.cars.find({ "engine.type": "Turbocharged" }) // Use dot notation for nested fields
+----------------
+car_dealership> db.cars.findOne({ model: "Nexon" })
+{
+  _id: ObjectId('68726925958465b411718dc7'),
+  maker: 'Tata',
+  model: 'Nexon',
+car_dealership>
+  transmission: 'Automatic',
+  engine: { type: 'Turbocharged', cc: 1199, torque: '170 Nm' },
+  features: [ 'Touchscreen', 'Reverse Camera', 'Bluetooth Connectivity' ],
+  sunroof: false,
+  airbags: 2
+}
+-----------------------------
+car_dealership> db.cars.find({},{model:1,_id:0}) 
+
+[
+  { model: 'Nexon' },
+  { model: 'Creta' },
+  { model: 'Baleno' },
+  { model: 'XUV500' },
+  { model: 'City' }
+]
+
+// db.cars.find() - Finds documents in the cars collection
+// {} - Empty filter – match all documents
+// { model: 1, _id: 0 } - Projection – show only the model field and exclude _id
+
+-------------------update----------------
+----updateOne
+
+Syntax of updateOne()
+
+db.cars.updateOne(
+  <filter>,        // which document to update
+  <update>,        // how to update
+  <options>        // optional (e.g., upsert: true)
+)
+
+Example 1: Update Transmission Type of a Specific Car
+🔹 Change the transmission of the "City" model from "Automatic" to "Manual":
+
+car_dealership> db.cars.updateOne(
+... { model: "City" },
+... { $set: { transmission: "Manual" }}
+... )
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+
+car_dealership> db.cars.updateOne( { model: "Baleno" }, { $set: { color: "Red" } } )
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
