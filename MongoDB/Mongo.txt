@@ -280,7 +280,25 @@ car_dealership> db.cars.find({},{model:1,_id:0})
 // { model: 1, _id: 0 } - Projection – show only the model field and exclude _id
 
 -------------------update----------------
-----updateOne
+
+
+MongoDB Update Operators Cheat Sheet:
+Operator	  Meaning
+$set	      Add new field or update value
+$unset	    Remove field
+$inc	      Increment numeric value
+$rename	    Rename a field
+$mul	      Multiply a field
+$min/$max	  Set value only if lower/higher
+$push/$pull	Add/remove from array
+$push	      Add value to end of array
+$each	      Push multiple values
+$addToSet	  Add only if not already present
+$pull	      Remove a value from array
+$pullAll	  Remove multiple values
+$set	      Replace value at a specific index
+
+-----------updateOne
 
 Syntax of updateOne()
 
@@ -310,3 +328,338 @@ car_dealership> db.cars.updateOne( { model: "Baleno" }, { $set: { color: "Red" }
   matchedCount: 1,
   modifiedCount: 1,
   upsertedCount: 0
+
+
+car_dealership> db.cars.updateOne( { model: "Honda" }, { $push: { features: "Heated Seats" } })
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 0,
+  modifiedCount: 0,
+  upsertedCount: 0
+}
+--------updateMany-----
+db.cars.updateMany(
+  { fuel_type: "Diesel" },
+  { $set: { eco_friendly: false } }
+)
+// Add multiple new features to the array
+
+db.cars.updateOne(
+  { model: "Nexon" },
+  { $push: { features: { $each: [ "Voice Control", "Android Auto" ] } } }
+)
+
+// Remove multiple values from the array
+
+db.cars.updateOne(
+  { model: "Creta" },
+  { $pullAll: { features: [ "Sunroof", "Bluetooth" ] } }
+)
+
+Update a specific value in the array (replace one value)
+
+// Add a feature only if it doesn’t already exist
+db.cars.updateOne(
+  { model: "City" },
+  { $addToSet: { features: "Cruise Control" } }
+) // Only adds "Cruise Control" if it’s not already present.
+
+
+
+db.collection.update(
+  { _id: 1},
+  { $unset: { "address": ""}}
+)
+
+
+----------------------delete--------
+deleteOne() → deletes only the first matching document.
+
+deleteMany() → deletes all matching documents.
+
+Syntax:
+db.collection.deleteOne(<filter>)
+db.collection.deleteMany(<filter>)
+---
+Example 1: Delete a Specific Car Model
+Let's say you want to delete the car with model "Baleno" from the cars collection:
+
+db.cars.deleteOne({ model: "Baleno" })
+---
+Example 3: Delete by Nested Field (e.g., engine.cc < 1200)
+
+db.cars.deleteMany({ "engine.cc": { $lt: 1200 } })
+---
+Example 4: Delete All Cars (Be Careful!)
+db.cars.deleteMany({})
+---Data type------------------------------------
+Data type using $type:
+db.cars.find({ sunroof: { $type: "bool" } })   // all boolean sunroof fields
+Or by type number:
+db.cars.find({ model: { $type: 2 } })          // type 2 = string
+----------------------------------------------
+-------------------Operators----------------------
+------Comparison Operators
+
+// Get all Diesel cars
+car_dealership> db.cars.find({ fuel_type: { $eq: "Diesel" } })
+
+// Get cars with engine capacity between 1200cc and 2000cc
+car_dealership> db.cars.find({ "engine.cc": { $gte: 1200, $lte: 2000 } })
+
+// Combine Multiple Comparison Operators:
+// This finds cars with 2 or more airbags and engine < 1500cc.
+car_dealership> db.cars.find({ airbags: { $gte: 2 }, "engine.cc": { $lt: 1500 } })
+
+----------- Logical Operators--------
+// Get cars that are Diesel and have at least 4 airbags:
+db.cars.find({
+  $and: [
+    { fuel_type: "Diesel" },
+    { airbags: { $gte: 4 } }
+  ]
+})
+
+✅ You can also write it without $and (MongoDB automatically applies AND when multiple conditions are at top level):
+
+
+// Get cars where model is Nexon OR sunroof is true:
+db.cars.find({
+  $or: [
+    { model: "Nexon" },
+    { sunroof: true }
+  ]
+})
+
+// Get cars where airbags are NOT greater than 2:
+db.cars.find({
+  airbags: { $not: { $gt: 2 } }
+})
+
+// Get cars that are neither Petrol nor Automatic:
+
+db.cars.find({
+  $nor: [
+    { fuel_type: "Petrol" },
+    { transmission: "Automatic" }
+  ]
+})
+
+------------------Element Operators---------------
+
+MongoDB Element Operators, which are used to check:
+  Whether a field exists or not
+  The data type of a field
+These are useful when working with optional fields, inconsistent data, or schema-less collections (very common in MongoDB).
+
+Operator	        Description	      Example
+$exists	 Checks if a field exists (true/false)	  { sunroof: { $exists: true } }
+$type	   Checks the BSON data type of a field	    { airbags: { $type: "int" } }
+
+> $exists: Check if a field exists
+Find all cars that have a sunroof field:
+db.cars.find({ sunroof: { $exists: true } })
+
+Find cars where color field does not exist:
+db.cars.find({ color: { $exists: false } })
+
+> $type: Check data type of a field
+
+Find all cars where airbags is a number:
+db.cars.find({ airbags: { $type: "int" } })
+
+---------------Evaluation Operators------------
+
+MongoDB Evaluation Operators, which let you perform more complex or custom queries like:
+>     Matching documents using expressions
+>     Pattern matching (like SQL LIKE)
+>     Conditions based on computed values
+
+// Find cars where airbags are greater than engine.cc divided by 500:
+db.cars.find({
+  $expr: { $gt: [ "$airbags", { $divide: [ "$engine.cc", 500 ] } ] }
+})
+
+
+> $regex: Pattern matching (like SQL LIKE)
+// Find all models that start with "C":
+db.cars.find({ model: { $regex: /^C/ } })
+
+> $mod: Match values using modulus
+//Find cars where airbags are even:
+db.cars.find({ airbags: { $mod: [2, 0] } })
+//Find cars with airbags that leave remainder 1 when divided by 3:
+db.cars.find({ airbags: { $mod: [3, 1] } })
+
+> $text: Full-text search (requires index)
+// First, create a text index:
+db.cars.createIndex({ model: "text", maker: "text" })
+
+// Then search for "Honda" or "City":
+db.cars.find({ $text: { $search: "Honda City" } })
+
+//Search for exact phrase:
+db.cars.find({ $text: { $search: "\"Honda City\"" } })
+
+-----------Update Operators-------------
+
+// Adds "color": "Red" if it doesn't exist, or updates it.
+db.cars.updateOne(
+  { model: "Nexon" },
+  { $set: { color: "Red" } }
+)
+
+// Deletes the sunroof field from the document.
+db.cars.updateOne(
+  { model: "Nexon" },
+  { $unset: { sunroof: "" } }
+)
+
+// Renames fuel_type to fuelType
+db.cars.updateOne(
+  { model: "Nexon" },
+  { $rename: { fuel_type: "fuelType" } }
+)
+
+------------------Array Operators-----------
+$push — Add item to array (can duplicate)
+db.cars.updateOne(
+  { model: "Creta" },
+  { $push: { features: "Ventilated Seats" } }
+) // Adds new value to features[].
+
+
+// $addToSet — Add item only if not present
+// Avoids adding duplicate "Bluetooth" if already present.
+db.cars.updateOne(
+  { model: "Creta" },
+  { $addToSet: { features: "Bluetooth" } }
+)
+
+// $pull — Remove matching value
+// Removes "Sunroof" from features[].
+db.cars.updateOne(
+  { model: "Creta" },
+  { $pull: { features: "Sunroof" } }
+)
+
+
+> $pullAll — Remove multiple values
+> Removes both "ABS" and "Bluetooth".
+db.cars.updateOne(
+  { model: "Creta" },
+  { $pullAll: { features: [ "ABS", "Bluetooth" ] } }
+)
+
+//$pop — Remove first or last array item
+
+db.cars.updateOne(
+  { model: "Creta" },
+  { $pop: { features: -1 } }  // removes first item
+)
+
+db.cars.updateOne(
+  { model: "Creta" },
+  { $pop: { features: 1 } }   // removes last item
+)
+
+----------Cursor Methods------
+db.cars.find().forEach(doc => printjson(doc))
+let allCars = db.cars.find().toArray()
+let allCars = db.cars.find().toArray()
+db.cars.find().skip(2)
+db.cars.find().sort({ model: 1 })
+db.cars.find().sort({ airbags: -1 }).skip(2).limit(3)
+-----------------------Aggregation Operators-----------
+ Aggregation Operators (used in pipelines)
+Operator	Meaning	Example
+$sum	Sum values	$sum: "$airbags"
+$avg	Average	$avg: "$engine.cc"
+$min	Minimum	$min: "$airbags"
+$max	Maximum	$max: "$airbags"
+$group	Group documents	{ _id: "$fuel_type", total: { $sum: 1 } }
+$match	Filter documents	{ $match: { sunroof: true } }
+$project	Include/exclude fields	{ $project: { model: 1, _id: 0 } }
+
+
+--------------------Aggregate Framework----------------------
+
+---$group
+// Group by fuel_type and count cars
+car_dealership> db.cars.aggregate( [{ $group: { _id: "$fuel_type", count: { $sum: 1 } } }])
+[
+  { _id: 'Electric', count: 2 },
+  { _id: 'CNG', count: 2 },
+  { _id: 'Diesel', count: 4 },
+  { _id: 'Petrol', count: 6 }
+]
+
+// Average price by maker
+
+db.cars.aggregate([
+  {
+    $group: {
+      _id: "$maker",
+      avg_price: { $avg: "$price"}
+    }
+  }
+])
+
+car_dealership> db.cars.aggregate([
+...   {
+...     $group: {
+...       _id: "$maker",
+...       avg_price: { $avg: "$price"}
+...     }
+...   }
+... ])
+[
+  { _id: 'Honda', avg_price: 1000000 },
+  { _id: 'Hyundai', avg_price: 1475000 },
+  { _id: 'Maruti Suzuki', avg_price: 716666.6666666666 },
+  { _id: 'Tata', avg_price: 1500000 },
+  { _id: 'Mahindra', avg_price: 1800000 }
+]
+
+car_dealership> db.cars.aggregate([
+...   {
+...     $group: {
+...       _id: "$maker",
+...       models: { $push: "$model" }
+...     }
+...   }
+... ])
+[
+  { _id: 'Tata', models: [ 'Nexon', 'Harrier', 'Nexon EV' ] },
+  { _id: 'Mahindra', models: [ 'XUV500' ] },
+  {
+    _id: 'Hyundai',
+    models: [ 'Creta', 'Venue', 'i20', 'Kona Electric' ]
+  },
+  { _id: 'Maruti Suzuki', models: [ 'Baleno', 'Swift', 'WagonR' ] },
+  { _id: 'Honda', models: [ 'City', 'Amaze', 'Amaze' ] }
+]
+
+-----------$match--------
+car_dealership> db.cars.aggregate([ { $match: { fuel_type: "Diesel" } }])
+
+db.cars.aggregate([
+  { $match: { features: "Sunroof" } }
+])
+
+db.cars.aggregate([
+  { $match: { "engine.cc": { $gt: 1500 } } }
+])
+
+db.cars.aggregate([
+  { $match: { maker: { $in: ["Hyundai", "Honda"] } } }
+])
+
+Hyundai cars having engine of more than 1200cc
+
+db.cars.aggregate(
+  [{$match:
+  {maker:"Hyundai",
+  "engine.cc":{$gt:1000}
+  }}])

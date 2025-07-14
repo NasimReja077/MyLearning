@@ -453,9 +453,6 @@ $slice	Return part of array	{ comments: { $slice: 5 } }
 $elemMatch	Match array element	{ scores: { $elemMatch: { score: { $gt: 80 } } } }
 
 🧪 Sample Query Using Operators:
-javascript
-Copy
-Edit
 db.users.find({
   $and: [
     { age: { $gte: 18, $lte: 30 } },
@@ -475,16 +472,11 @@ Projection	1, 0, $slice, $elemMatch
 What is Aggregation in MongoDB?
 Aggregation is a way to transform, filter, and analyze data from a MongoDB collection, similar to SQL's:
 
-sql
-Copy
-Edit
 SELECT ... FROM ... WHERE ... GROUP BY ... HAVING ...
 In MongoDB, it’s done using the Aggregation Pipeline — a series of stages that process documents.
 
 🛠️ Aggregation Pipeline Syntax:
-javascript
-Copy
-Edit
+
 db.collection.aggregate([
   { /* stage 1 */ },
   { /* stage 2 */ },
