@@ -663,3 +663,135 @@ db.cars.aggregate(
   {maker:"Hyundai",
   "engine.cc":{$gt:1000}
   }}])
+
+  ---------------$COUNT--------
+
+car_dealership> db.cars.aggregate([ { $count: "totalCars" }])
+[ { totalCars: 14 } ]
+
+car_dealership> db.cars.aggregate([
+... { $match: { fuel_type: "Petrol" }},
+... { $count: "petrolCare" }
+... ])
+[ { petrolCare: 6 } ]
+
+
+db.cars.aggregate([
+  { $unwind: "$service_history" },
+  { $count: "totalServices" }
+])
+
+
+----------------$project---------
+Include specific fields
+js
+Copy
+Edit
+db.cars.aggregate([
+  {
+    $project: {
+      _id: 0,
+      maker: 1,
+      model: 1,
+      price: 1
+    }
+  }
+])
+✅ Output will show only maker, model, and price.
+
+-
+car_dealership> db.cars.aggregate([ { $project: { _id: 0, car_maker: "$maker", car_model: "$model"}}])
+
+✅ Renames maker to car_maker, model to car_model.
+
+---
+car_dealership> db.cars.aggregate([ { $project: {model:1, price_with_tax: { $multiply: ["$price",1.18]}}}])
+
+✅ Adds 18% GST to price and shows a new field price_with_tax.
+---
+// Access nested fields
+// Extracts engine.cc and shows it as engine_cc.
+car_dealership> db.cars.aggregate([ { $project: { model:1, engine_cc:"$engine.cc"}}])
+
+// Concatenate two fields
+db.cars.aggregate([
+  {
+    $project: {
+      full_name: { $concat: ["$maker", " ", "$model"] }
+    }
+  }
+])
+✅ Output:
+{ full_name: "Tata Nexon" }
+
+
+car_dealership> db.cars.aggregate([
+... {
+... $project: {
+... model: 1,
+... category: {
+... $cond: { if: { $gte: ["$price", 1500000]}, then:"Premium",else:"Budget"}
+... }
+... }
+... }
+... ])
+
+[
+  {
+    _id: ObjectId('6873cbc8c7e75044284996e9'),
+    model: 'Creta',
+    category: 'Premium'
+  },
+  {
+    _id: ObjectId('6873cbc8c7e75044284996ea'),
+    model: 'Baleno',
+    category: 'Budget'
+  }
+]
+
+-----------$sort--------
+//Sort cars by price (low to high)
+db.cars.aggregate([
+  { $sort: { price: 1 } }
+])
+
+// Sort by price (high to low)
+// Sorts cars from most expensive to cheapest.
+db.cars.aggregate([
+  { $sort: { price: -1 } }
+])
+
+
+
+// Sort by multiple fields
+// First sorts by fuel_type (alphabetically), and within each fuel type, sorts by price (descending).
+car_dealership> db.cars.aggregate([ { $sort: { fuel_type: 1, price: -1 } }] )
+
+
+// Sort by nested field (engine.cc)
+db.cars.aggregate([
+  { $sort: { "engine.cc": -1 } }
+])
+✅ Sorts by engine capacity in descending order.
+
+
+// Sort after $group or $match
+// Example: Sort fuel types by average price.
+
+car_dealership> db.cars.aggregate([
+...   {
+...     $group: {
+...       _id: "$fuel_type",
+...       avg_price: { $avg: "$price" }
+...     }
+...   },
+...   { $sort: { avg_price: -1 } }
+... ])
+[
+  { _id: 'Electric', avg_price: 1850000 },
+  { _id: 'Diesel', avg_price: 1575000 },
+  { _id: 'Petrol', avg_price: 991666.6666666666 },
+  { _id: 'CNG', avg_price: 700000 }
+]
+
+-----------------------$limit-----------

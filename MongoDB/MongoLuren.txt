@@ -267,6 +267,166 @@ It uses query syntax to select documents that match the specified condition.
   $match: { <field>: <value> }
 }
 
+What is $count?
+The $count stage is used to count the number of documents that pass through the pipeline.
+It returns a single document with the count and a field name of your choice.
+
+✅ Syntax
+{ $count: "<field_name>" }
+✅ The result will look like:
+{ "<field_name>": <number> }
+
+
+What is $project?
+The $project stage is used to:
+
+Include or exclude fields from documents
+
+Rename fields
+
+Create new fields
+
+Transform data (e.g., convert, combine, extract parts)
+
+Think of $project like the SELECT clause in SQL — it controls what your final output looks like.
+
+✅ Syntax
+{
+  $project: {
+    <field1>: 1 or 0,
+    <field2>: 1 or 0,
+    ...
+    <newField>: <expression>
+  }
+}
+1 means include the field
+
+0 means exclude
+
+You can also use computed expressions ($concat, $substr, $add, etc.)
+
+
+What is $sort?
+The $sort stage is used to sort documents in ascending or descending order based on one or more fields.
+
+It’s used within aggregation pipelines and works similarly to .sort() in regular MongoDB queries.
+
+✅ Syntax
+{ 
+  $sort: { 
+    <field1>: 1 or -1, 
+    <field2>: 1 or -1 
+  } 
+}
+1 → Ascending order (small to big / A–Z)
+-1 → Descending order (big to small / Z–A)
+
+
+What is $limit?
+The $limit stage restricts the number of documents that pass through the aggregation pipeline.
+
+It works like SQL’s LIMIT or .limit() in MongoDB queries.
+
+Syntax
+{ $limit: <number> }
+Replace <number> with how many documents you want to return.
+
+
+✅ Returns only the first 5 documents from the collection.
+Return only 5 cars
+
+db.cars.aggregate([
+  { $limit: 5 }
+])
+
+
+db.cars.aggregate([
+  { $sort: { price: -1 } },  // High to low
+  { $limit: 3 }
+])
+✅ Returns top 3 most expensive cars.
+
+
+Get cheapest 2 electric cars
+js
+Copy
+Edit
+db.cars.aggregate([
+  { $match: { fuel_type: "Electric" } },
+  { $sort: { price: 1 } },   // Low to high
+  { $limit: 2 }
+])
+✅ Filters electric cars, sorts them, and limits to 2 cheapest.
+
+🔹 4. Use after $group
+Example: Group by maker and show top 2 makers only:
+
+db.cars.aggregate([
+  { $group: { _id: "$maker", totalCars: { $sum: 1 } } },
+  { $limit: 2 }
+])
+
+
+What is $limit?
+The $limit stage restricts the number of documents that pass through the aggregation pipeline.
+It works like SQL’s LIMIT or .limit() in MongoDB queries.
+
+Syntax
+{ $limit: <number> }
+Replace <number> with how many documents you want to return.
+
+
+What is $unwind?
+The $unwind stage deconstructs an array field from each input document and creates a separate document for each element of the array.
+
+It's used when you want to analyze or filter array items individually.
+
+Syntax
+{ $unwind: "$<arrayField>" }
+Optional advanced syntax:
+{
+  $unwind: {
+    path: "$<arrayField>",
+    includeArrayIndex: "index",
+    preserveNullAndEmptyArrays: true
+  }
+}
+
+
+What is $lookup?
+The $lookup stage is used to perform a left outer join between:
+The current collection
+And a foreign collection (another collection in the same database)
+It combines related documents from different collections based on a matching field.
+
+
+Syntax
+{
+  $lookup: {
+    from: "<foreign_collection>",
+    localField: "<field_in_current_collection>",
+    foreignField: "<field_in_foreign_collection>",
+    as: "<output_array_field>"
+  }
+}
+
+
+
+What is $addFields?
+The $addFields stage adds new fields to documents.
+You can also modify existing fields.
+It works just like $project, but it keeps all original fields unless you explicitly overwrite them.
+
+Syntax
+{
+  $addFields: {
+    <newField>: <value or expression>,
+    ...
+  }
+}
+
+
+
 > no sql
 >MongoDB
 > Basic Architecture of MongoDB
