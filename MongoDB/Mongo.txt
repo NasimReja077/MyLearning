@@ -795,3 +795,141 @@ car_dealership> db.cars.aggregate([
 ]
 
 -----------------------$limit-----------
+db.cars.aggregate([
+  { $sort: { price: -1 } },  // High to low
+  { $limit: 3 }
+])
+✅ Returns top 3 most expensive cars.
+
+db.cars.aggregate([
+  { $match: { fuel_type: "Electric" } },
+  { $sort: { price: 1 } },   // Low to high
+  { $limit: 2 }
+])
+✅ Filters electric cars, sorts them, and limits to 2 cheapest.
+
+Example: Group by maker and show top 2 makers only:
+
+db.cars.aggregate([
+  { $group: { _id: "$maker", totalCars: { $sum: 1 } } },
+  { $limit: 2 }
+])
+
+-------------unwind
+Example 1: Unwind features of each car
+✅ Returns each car model with each individual feature on a separate document.
+
+db.cars.aggregate([
+  { $unwind: "$features" },
+  { $project: { _id: 0, model: 1, features: 1 } }
+])
+
+Example 2: Count how many features each model has
+✅ Gives the number of features for each car model.
+
+db.cars.aggregate([
+  { $unwind: "$features" },
+  { $group: { _id: "$model", featureCount: { $sum: 1 } } }
+])
+
+// Unwind service_history and calculate total cost per car
+// ✅ Sums up total service cost for each model.
+
+db.cars.aggregate([
+  { $unwind: "$service_history" },
+  {
+    $group: {
+      _id: "$model",
+      totalCost: { $sum: "$service_history.cost" }
+    }
+  }
+])
+---------------
+
+// Join cars with sales using model:
+db.cars.aggregate([
+  {
+    $lookup: {
+      from: "sales",           // foreign collection
+      localField: "model",     // from current (cars) collection
+      foreignField: "model",   // from sales collection
+      as: "sales_data"         // new field with array of matches
+    }
+  }
+])
+
+
+
+Flatten the result using $unwind
+Since sales_data is an array, you can use $unwind to make it easier to work with:
+
+js
+Copy
+Edit
+db.cars.aggregate([
+  {
+    $lookup: {
+      from: "sales",
+      localField: "model",
+      foreignField: "model",
+      as: "sales_data"
+    }
+  },
+  { $unwind: "$sales_data" },
+  {
+    $project: {
+      _id: 0,
+      model: 1,
+      maker: 1,
+      sold_count: "$sales_data.sold_count"
+    }
+  }
+])
+✅ Clean, merged result with joined data.
+
+🛠 Real-Life Use Case: Join orders and customers
+Let’s say:
+
+orders collection contains { customer_id: 101, item: "Phone" }
+
+customers collection contains { customer_id: 101, name: "Nasim" }
+
+
+db.orders.aggregate([
+  {
+    $lookup: {
+      from: "customers",
+      localField: "customer_id",
+      foreignField: "customer_id",
+      as: "customer_info"
+    }
+  }
+])
+
+------------------------
+db.cars.aggregate([
+  {
+    $addFields: {
+      status: "Available"
+    }
+  }
+])
+
+
+
+Add category based on price
+
+db.cars.aggregate([
+  {
+    $addFields: {
+      category: {
+        $cond: {
+          if: { $gte: ["$price", 1500000] },
+          then: "Premium",
+          else: "Budget"
+        }
+      }
+    }
+  }
+])
+✅ Adds a new field category based on price.
