@@ -425,7 +425,23 @@ Syntax
   }
 }
 
+Conditional Operators
+$cond $ifNull $switch
 
+
+1. $cond — IF / ELSE
+
+✅ Syntax
+{
+  $cond: {
+    if: <condition>,
+    then: <value_if_true>,
+    else: <value_if_false>
+  }
+}
+
+Or shorthand syntax:
+{ $cond: [ <condition>, <true>, <false> ] }
 
 > no sql
 >MongoDB

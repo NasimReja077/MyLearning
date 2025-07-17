@@ -933,3 +933,8 @@ db.cars.aggregate([
   }
 ])
 ✅ Adds a new field category based on price.
+
+
+----------------
+Conditional Operators
+Adds "category": "Premium" if price ≥ 15 lakh, else "Budget"
