@@ -938,3 +938,82 @@ db.cars.aggregate([
 ----------------
 Conditional Operators
 Adds "category": "Premium" if price ≥ 15 lakh, else "Budget"
+
+Tag expensive cars
+
+db.cars.aggregate([
+  {
+    $addFields: {
+      category: {
+        $cond: {
+          if: { $gte: ["$price", 1500000] },
+          then: "Premium",
+          else: "Budget"
+        }
+      }
+    }
+  }
+])
+
+
+Shorthand version
+{ $cond: [ { $gte: ["$price", 1500000] }, "Premium", "Budget" ] }
+
+
+If airbags is null, set it to 2
+
+db.cars.aggregate([
+  {
+    $project: {
+      model: 1,
+      airbags: { $ifNull: ["$airbags", 2] }
+    }
+  }
+])
+✅ If airbags is missing or null, it sets the value to 2.
+
+Categorize based on fuel type
+
+db.cars.aggregate([
+  {
+    $addFields: {
+      fuel_category: {
+        $switch: {
+          branches: [
+            { case: { $eq: ["$fuel_type", "Petrol"] }, then: "Non-EV" },
+            { case: { $eq: ["$fuel_type", "Diesel"] }, then: "Non-EV" },
+            { case: { $eq: ["$fuel_type", "Electric"] }, then: "EV" },
+            { case: { $eq: ["$fuel_type", "CNG"] }, then: "Alternative Fuel" }
+          ],
+          default: "Unknown"
+        }
+      }
+    }
+  }
+])
+✅ Assigns a fuel category based on the fuel_type field.
+
+
+Label cars as:
+
+"High-End" if price ≥ 20,00,000
+
+"Mid-Range" if 10L–20L
+
+"Economy" if < 10L
+
+db.cars.aggregate([
+  {
+    $addFields: {
+      price_label: {
+        $switch: {
+          branches: [
+            { case: { $gte: ["$price", 2000000] }, then: "High-End" },
+            { case: { $gte: ["$price", 1000000] }, then: "Mid-Range" }
+          ],
+          default: "Economy"
+        }
+      }
+    }
+  }
+])

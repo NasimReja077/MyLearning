@@ -443,6 +443,35 @@ $cond $ifNull $switch
 Or shorthand syntax:
 { $cond: [ <condition>, <true>, <false> ] }
 
+ 2. $ifNull — Provide a default value
+Used to return the first non-null value.
+
+✅ Syntax
+{ $ifNull: [ <expression>, <default_value> ] }
+
+
+3. $switch — Multiple IF-ELSE Conditions
+More readable when you have many if-else branches.
+
+✅ Syntax
+{
+  $switch: {
+    branches: [
+      { case: <condition1>, then: <value1> },
+      { case: <condition2>, then: <value2> },
+      ...
+    ],
+    default: <default_value>
+  }
+}
+
+
+Summary Table
+Operator	Purpose	When to Use
+$cond	Simple IF-THEN-ELSE	One condition
+$ifNull	Fallback for null or missing	Provide default value
+$switch	Multiple IF-THEN branches	More than two conditions
+
 > no sql
 >MongoDB
 > Basic Architecture of MongoDB
