@@ -472,6 +472,527 @@ $cond	Simple IF-THEN-ELSE	One condition
 $ifNull	Fallback for null or missing	Provide default value
 $switch	Multiple IF-THEN branches	More than two conditions
 
+DATE Operators
+
+$dateAdd   $dateDiff  $month  $year  $hour 
+
+$dateOfMonth   $dayOfYear
+
+1. $dateAdd — Add time to a date
+✅ Syntax:
+{
+  $dateAdd: {
+    startDate: <date>,
+    unit: "<timeUnit>",
+    amount: <number>
+  }
+}
+| Time units: | "year", "month", "day", "hour", "minute", "second", etc.
+
+2. $dateDiff — Difference between two dates
+✅ Syntax:
+js
+Copy
+Edit
+{
+  $dateDiff: {
+    startDate: <date>,
+    endDate: <date>,
+    unit: "<timeUnit>"
+  }
+}
+🔷 3. $month — Extract month number (1–12)
+js
+Copy
+Edit
+{ $month: "$orderDate" }
+🔷 4. $year — Extract year
+js
+Copy
+Edit
+{ $year: "$orderDate" }
+🔷 5. $hour — Extract hour (0–23)
+js
+Copy
+Edit
+{ $hour: "$orderDate" }
+🔷 6. $dateOfMonth — Day of the month (1–31)
+js
+Copy
+Edit
+{ $dayOfMonth: "$orderDate" }
+🔷 7. $dayOfYear — Day number in the year (1–366)
+js
+Copy
+Edit
+{ $dayOfYear: "$orderDate" }
+Summary Table
+Operator	Description	Example
+$dateAdd	Add time units to a date	+7 days, +1 month
+$dateDiff	Find time difference between 2 dates	age, delivery gap
+$month	Extract month (1-12)	Jan = 1, Dec = 12
+$year	Extract year	2025
+$hour	Extract hour	0-23
+$dayOfMonth	Extract day in the month (1–31)	15
+$dayOfYear	Extract day in the year (1–366)	365
+
+----------------
+What Are Variables in MongoDB?
+MongoDB provides two types of variables in aggregation:
+
+System Variables — Predefined by MongoDB
+
+User-Defined Variables — Created by you using $let or $setVariable
+
+1. System Variables
+Variable	Description
+$$ROOT	The entire input document
+$$CURRENT	The current level document in pipeline stage
+$$NOW	The current timestamp (when the aggregation runs)
+$$REMOVE	Used to conditionally remove a field
+$$DESCEND	Controls traversal in $redact
+$$CLUSTER_TIME	Cluster timestamp
+
+🔹 2. User-Defined Variables
+You can define custom variables using:
+
+$let — to declare local variables
+
+$setVariable — to assign variable value dynamically
+
+User Defined Variables
+
+These variables allow you to store values and
+reuse them within the same pipeline, making the
+pipeline more readable and efficient in certain
+scenarios
+
+Data Modeling in MongoDB
+Data modeling in MongoDB is the process of determining how data should be structured and related within a MongoDB collection. Unlike traditional relational databases that rely on normalized tables, MongoDB uses documents (in BSON format), allowing for flexible, nested data structures.
+
+ Relationships in MongoDB
+In MongoDB, relationships refer to how documents relate to one another across collections. Since MongoDB is a NoSQL, document-oriented database, relationships are implemented differently from SQL databases — using embedding or referencing instead of JOINs.
+
+
+We can still model relationships between documents in
+MongoDB using a few approaches. 
+The two main types of relationships are:
+Embedded Documents (Denormalization)
+Referenced Documents (Normalization)
+
+
+🔹 Types of Relationships in MongoDB
+🔸 1. One-to-One (1:1)
+Definition: One document is associated with one other document.
+
+✅ Example – User and Profile (Embedded)
+json
+Copy
+Edit
+{
+  "_id": 1,
+  "name": "Nasim",
+  "profile": {
+    "bio": "Web Developer",
+    "location": "Kolkata"
+  }
+}
+✅ Example – User and Profile (Referenced)
+json
+Copy
+Edit
+// users
+{ "_id": 1, "name": "Nasim", "profile_id": 101 }
+
+// profiles
+{ "_id": 101, "bio": "Web Developer", "location": "Kolkata" }
+Use:
+
+Embed if the profile is always accessed with the user.
+
+Reference if it is large or accessed separately.
+
+🔸 2. One-to-Many (1:N)
+Definition: One document is related to multiple documents in another collection.
+
+✅ Example – Customer and Orders (Referenced)
+json
+Copy
+Edit
+// customers
+{ "_id": 1, "name": "Reja" }
+
+// orders
+[
+  { "_id": 1001, "customer_id": 1, "product": "Car Tyre" },
+  { "_id": 1002, "customer_id": 1, "product": "Engine Oil" }
+]
+✅ Example – Blog and Comments (Embedded)
+json
+Copy
+Edit
+{
+  "_id": 1,
+  "title": "MongoDB Relationships",
+  "comments": [
+    { "user": "Ali", "text": "Great post!" },
+    { "user": "Mina", "text": "Very useful." }
+  ]
+}
+Use:
+
+Embed if the subdocuments are small and accessed together.
+
+Reference for larger lists or independent access.
+
+🔸 3. Many-to-Many (M:N)
+Definition: Documents in one collection relate to many documents in another collection.
+
+✅ Example – Students and Courses
+json
+Copy
+Edit
+// students
+{ "_id": 1, "name": "Nasim", "course_ids": [101, 102] }
+
+// courses
+{ "_id": 101, "title": "MongoDB Basics" }
+{ "_id": 102, "title": "React.js" }
+You can also use a junction/association collection:
+
+json
+Copy
+Edit
+// student_courses
+{ "student_id": 1, "course_id": 101 }
+{ "student_id": 1, "course_id": 102 }
+🔹 Implementing Relationships with $lookup
+MongoDB provides the $lookup stage in aggregation for performing joins.
+
+🔁 $lookup Example
+js
+Copy
+Edit
+db.orders.aggregate([
+  {
+    $lookup: {
+      from: "customers",
+      localField: "customer_id",
+      foreignField: "_id",
+      as: "customer_info"
+    }
+  }
+])
+
+✅ Summary
+Relationship Type	Example	Best Method
+One-to-One	User ↔ Profile	Embed/Reference
+One-to-Many	Blog ↔ Comments	Embed (small), Reference (large)
+Many-to-Many	Student ↔ Courses	Reference + Lookup
+
+
+JOIN with $lookup
+
+db.users.aggregate([
+    {
+        "$lookup": {
+            "from": "orders",       // The target collection to join with
+            "localField": "_id",   // The field from the 'users' collection
+            "foreignField": "user_id",   // The field from the 'orders' collection
+            "as": "orders"  // The name of the new array field to add to the 'users' 
+        }
+    }
+])
+
+
+Schema Validation
+MongoDB uses a JSON Schema format to define the
+validation rules. 
+
+
+Allows you to specify various constraints and rules
+for your documents, such as required fields, field
+types, and value ranges.
+
+
+MongoDB is a schema-less NoSQL database, but it allows schema validation using JSON Schema (from MongoDB v3.6+). This helps you enforce rules on the structure of your documents — similar to schema in SQL.
+
+🔹 Why Use Schema Validation?
+✅ Ensure data consistency
+
+✅ Prevent invalid or incomplete data
+
+✅ Help teams understand document structure
+
+✅ Easier debugging and development
+
+ Enabling Schema Validation (Example)
+Example: A collection for users with validation:
+js
+Copy
+Edit
+db.createCollection("users", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["name", "email", "age"],
+      properties: {
+        name: {
+          bsonType: "string",
+          description: "must be a string and is required"
+        },
+        email: {
+          bsonType: "string",
+          pattern: "^.+@.+$",
+          description: "must be a valid email and is required"
+        },
+        age: {
+          bsonType: "int",
+          minimum: 18,
+          description: "must be an integer >= 18 and is required"
+        },
+        phone: {
+          bsonType: "string",
+          description: "optional but must be a string"
+        }
+      }
+    }
+  },
+  validationLevel: "strict",      // Options: off / moderate / strict
+  validationAction: "error"       // Options: warn / error
+})
+📌 Options for Validation
+Option	Description
+validationLevel	"off", "moderate" (only new/updated fields), "strict" (all)
+validationAction	"warn" (logs but allows insert), "error" (rejects invalid data)
+
+
+Update Schema Validator on Existing Collection
+js
+Copy
+Edit
+db.runCommand({
+  collMod: "users",
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["name", "email"]
+      // ...more rules
+    }
+  },
+  validationLevel: "strict",
+  validationAction: "error"
+})
+
+
+
+------------------
+we can update the existing
+collection to add validation
+
+Update Existing Collection with Validation
+Suppose you already have a collection called cars, and now you want to enforce some validation rules on it.
+
+📌 Example
+js
+Copy
+Edit
+db.runCommand({
+  collMod: "cars",
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["model", "year", "price"],
+      properties: {
+        model: {
+          bsonType: "string",
+          description: "must be a string and is required"
+        },
+        year: {
+          bsonType: "int",
+          minimum: 2000,
+          maximum: 2025,
+          description: "must be an int between 2000 and 2025"
+        },
+        price: {
+          bsonType: "double",
+          minimum: 100000,
+          description: "must be a double and at least 100000"
+        },
+        available: {
+          bsonType: "bool",
+          description: "optional availability status"
+        }
+      }
+    }
+  },
+  validationLevel: "strict",    // (default: strict)
+  validationAction: "error"     // (default: error)
+})
+🧠 Explanation
+collMod: Used to modify an existing collection.
+
+validator: The JSON Schema you want to apply.
+
+validationLevel: "strict": Applies to all inserts/updates.
+
+validationAction: "error": Rejects invalid documents.
+
+
+
+What is an Index?
+An index in MongoDB is similar to the index in a book — it helps locate data faster.
+
+Without an index, MongoDB must scan every document in a collection to find the match (called collection scan). This is slow for large collections.
+
+
+An INDEX is a data structure that improves
+the speed of query operations by allowing
+the database to quickly locate and access the
+required data without scanning every
+document in a collection.
+
+Stores the indexed fields in a sorted order,
+along with pointers to the actual documents
+in the collection.
+
+db.collection.createIndex(
+
+    { <field1>: <type1>, 
+
+        <field2>: <type2>, ... }, {<options> })
+
+
+Why Use Indexes?
+🔎 Faster Search (query optimization)
+🧭 Efficient sorting
+🚀 Speed up aggregation and lookup
+✅ Ensure uniqueness of a field (like _id or email)
+
+
+Types of Indexes
+Type	                    Description
+Single Field Index	      Index on one field (e.g., { name: 1 })
+Compound Index	          Index on multiple fields (e.g., { name: 1, age: -1 })
+Multikey Index	          Indexes array fields
+Text Index	              Indexes string content for text search
+Hashed Index	            Hash-based index for sharded collections
+Wildcard Index	          Indexes dynamic or all fields (e.g., { "$**": 1 })
+Geospatial Index	        For location-based queries (2d, 2dsphere)
+
+
+Types of Indexes:
+Single Field Index
+Compound Index: Involves multiple fields.
+Unique Index: Index that ensures no two documents have the
+same value for the indexed field.
+TTL Index: TTL (Time to Live) indexes that are used to
+automatically remove documents after a certain period.
+
+
+Create Index
+// Single field index
+db.users.createIndex({ email: 1 })
+
+// Compound index
+db.orders.createIndex({ customerId: 1, orderDate: -1 })
+
+// Unique index
+db.students.createIndex({ rollNo: 1 }, { unique: true })
+
+// Text index
+db.blogs.createIndex({ title: "text", content: "text" })
+
+
+List Indexes
+db.users.getIndexes()
+
+Drop Index
+// Drop by name
+db.users.dropIndex("email_1")
+
+// Drop all indexes
+db.users.dropIndexes()
+
+
+
+
+What is a Transaction?
+A transaction in MongoDB is a set of operations (insert, update, delete, etc.) that are executed together.
+They follow ACID properties:
+Atomicity – All or nothing
+Consistency – Data remains valid
+Isolation – Transactions don’t interfere
+Durability – Changes are permanent
+
+
+When to Use Transactions?
+Use transactions when:
+You’re updating multiple documents/collections
+You need strict consistency
+You want to rollback if something fails
+
+
+
+Replications
+What is Replication?
+Replication is the process of synchronizing data across multiple MongoDB servers (called nodes). It provides:
+
+✅ High availability
+
+✅ Data redundancy
+
+✅ Automatic failover
+
+
+
+🔷 What is ObjectId?
+ObjectId is a 12-byte unique identifier that MongoDB automatically generates for each document unless you manually specify _id.
+
+📦 ObjectId Structure (12 bytes = 96 bits):
+Byte(s)	Content	Description
+4	Timestamp	Time of creation (Unix epoch time)
+5	Machine ID	Unique identifier of machine
+2	Process ID	ID of MongoDB server process
+3	Counter	Incrementing counter (ensures uniqueness)
+
+Example:
+const obj = ObjectId("64e45a8d1fcdb14723df5672");
+console.log(obj.getTimestamp());  // Date derived from ObjectId
+
+
+
+How to Create ObjectId
+
+In MongoDB shell:
+ObjectId()                 // generates a new ObjectId
+ObjectId("...")            // parse existing ObjectId string
+
+In Node.js (Mongoose/MongoDB driver):
+const { ObjectId } = require('mongodb');
+const id = new ObjectId();
+console.log(id.toHexString());
+
+
+ObjectId Methods
+Method	                Description
+ObjectId()	            Generates a new ObjectId
+ObjectId.getTimestamp()	Gets the creation time as a Date object
+ObjectId.toHexString()	Converts to 24-char hex string
+
+Get Date from ObjectId:
+const id = ObjectId("64e45a8d1fcdb14723df5672");
+id.getTimestamp(); // → ISODate("2023-08-21T12:34:56Z")
+
+🧠 Fun Fact:
+If you sort by _id, you are essentially sorting by creation time because ObjectId starts with a timestamp.
+
+🔐 Can I Use Custom _id?
+Yes! You can assign any value (string, number, UUID) as _id:
+
+db.users.insertOne({ _id: "nasim123", name: "Nasim Reja" });
+
+
 > no sql
 >MongoDB
 > Basic Architecture of MongoDB

@@ -1017,3 +1017,202 @@ db.cars.aggregate([
     }
   }
 ])
+------------------
+DATE Operators
+
+car_dealership> db.orders.aggregate([
+... {
+... $project: {
+... orderdate: 1,
+... deliveryDate: {
+... $dateAdd: {
+... startDate: "$orderDate",
+... unit: "day",
+... amount: 7
+... }
+}}}
+])
+-------------
+car_dealership> db.users.aggregate([ { $project: { name: 1, age: { $dateDiff: { startDate: "$dob", endDate: "$$NOW", unit: "year" }}}}])
+-------
+db.orders.aggregate([
+  {
+    $project: {
+      orderDate: 1,
+      year: { $year: "$orderDate" },
+      month: { $month: "$orderDate" },
+      hour: { $hour: "$orderDate" },
+      dayOfMonth: { $dayOfMonth: "$orderDate" },
+      dayOfYear: { $dayOfYear: "$orderDate" },
+      deliveryDate: {
+        $dateAdd: {
+          startDate: "$orderDate",
+          unit: "day",
+          amount: 7
+        }
+      }
+    }
+  }
+])
+-----------------
+. Use $$ROOT to embed the whole document
+Question:
+Project the dealer's name and include the entire document under a new field called fullDetails.
+
+db.car_dealership.aggregate([
+  {
+    $project: {
+      dealer: 1,
+      fullDetails: "$$ROOT"
+    }
+  }
+])
+
+2. Use $$CURRENT inside $map to show car models
+Question:
+List all car models and show the dealership name next to each using $$CURRENT.
+
+db.car_dealership.aggregate([
+  {
+    $project: {
+      dealer: 1,
+      carModels: {
+        $map: {
+          input: "$cars",
+          as: "car",
+          in: {
+            model: "$$car.model",
+            dealer: "$dealer",
+            currentObj: "$$CURRENT"
+          }
+        }
+      }
+    }
+  }
+])
+
+Use $$NOW to calculate time since a car was sold
+Question:
+Show the number of days since the first car was sold, using $$NOW.
+
+Solution:
+
+js
+Copy
+Edit
+db.car_dealership.aggregate([
+  {
+    $project: {
+      dealer: 1,
+      daysSinceSold: {
+        $dateDiff: {
+          startDate: { $arrayElemAt: ["$cars.soldDate", 0] },
+          endDate: "$$NOW",
+          unit: "day"
+        }
+      }
+    }
+  }
+])
+
+4. Use $$REMOVE to conditionally hide a field
+Question:
+Remove the location field if the dealer name is AutoMax.
+
+Solution:
+
+js
+Copy
+Edit
+db.car_dealership.aggregate([
+  {
+    $project: {
+      dealer: 1,
+      location: {
+        $cond: {
+          if: { $eq: ["$dealer", "AutoMax"] },
+          then: "$$REMOVE",
+          else: "$location"
+        }
+      }
+    }
+  }
+])
+🟢 5. Use $let (user-defined variable) to calculate discount
+Question:
+For each car, calculate a 10% discount using $let.
+
+Solution:
+
+js
+Copy
+Edit
+db.car_dealership.aggregate([
+  {
+    $unwind: "$cars"
+  },
+  {
+    $project: {
+      model: "$cars.model",
+      price: "$cars.price",
+      discountedPrice: {
+        $let: {
+          vars: {
+            discount: { $multiply: ["$cars.price", 0.10] }
+          },
+          in: { $subtract: ["$cars.price", "$$discount"] }
+        }
+      }
+    }
+  }
+])
+🟢 6. Use $let with $cond to mark expensive cars
+Question:
+Add a field tag as "Luxury" if the car price is above ₹15,00,000 else "Standard" using $let.
+
+Solution:
+
+js
+Copy
+Edit
+db.car_dealership.aggregate([
+  { $unwind: "$cars" },
+  {
+    $project: {
+      model: "$cars.model",
+      price: "$cars.price",
+      tag: {
+        $let: {
+          vars: { p: "$cars.price" },
+          in: {
+            $cond: {
+              if: { $gt: ["$$p", 1500000] },
+              then: "Luxury",
+              else: "Standard"
+            }
+          }
+        }
+      }
+    }
+  }
+])
+⚠️ For Advanced: $$DESCEND and $$CLUSTER_TIME
+These are more advanced and rarely used:
+
+$$DESCEND is used only inside $redact for access control.
+
+$$CLUSTER_TIME is used in replica set operations for causal consistency (useful in sharding/multi-document transactions).
+
+Let me know if you want practice on $redact or sharded setups.
+
+
+
+---------Indexes--------
+db.car_dealership.createIndex({ brand: 1 })
+Now queries like:
+ealership.find({ brand: "Toyota" })
+
+Bonus: Use explain()
+To see if MongoDB is using the index:
+db.users.find({ email: "test@example.com" }).explain("executionStats")
+
