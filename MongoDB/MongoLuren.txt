@@ -348,9 +348,7 @@ db.cars.aggregate([
 
 
 Get cheapest 2 electric cars
-js
-Copy
-Edit
+
 db.cars.aggregate([
   { $match: { fuel_type: "Electric" } },
   { $sort: { price: 1 } },   // Low to high
@@ -491,9 +489,7 @@ $dateOfMonth   $dayOfYear
 
 2. $dateDiff — Difference between two dates
 ✅ Syntax:
-js
-Copy
-Edit
+
 {
   $dateDiff: {
     startDate: <date>,
@@ -501,40 +497,28 @@ Edit
     unit: "<timeUnit>"
   }
 }
+
 🔷 3. $month — Extract month number (1–12)
-js
-Copy
-Edit
 { $month: "$orderDate" }
 🔷 4. $year — Extract year
-js
-Copy
-Edit
 { $year: "$orderDate" }
 🔷 5. $hour — Extract hour (0–23)
-js
-Copy
-Edit
 { $hour: "$orderDate" }
 🔷 6. $dateOfMonth — Day of the month (1–31)
-js
-Copy
-Edit
 { $dayOfMonth: "$orderDate" }
 🔷 7. $dayOfYear — Day number in the year (1–366)
-js
-Copy
-Edit
 { $dayOfYear: "$orderDate" }
+
+
 Summary Table
-Operator	Description	Example
-$dateAdd	Add time units to a date	+7 days, +1 month
-$dateDiff	Find time difference between 2 dates	age, delivery gap
-$month	Extract month (1-12)	Jan = 1, Dec = 12
-$year	Extract year	2025
-$hour	Extract hour	0-23
-$dayOfMonth	Extract day in the month (1–31)	15
-$dayOfYear	Extract day in the year (1–366)	365
+Operator	        Description	Example
+$dateAdd	        Add time units to a date	+7 days, +1 month
+$dateDiff	        Find time difference between 2 dates	age, delivery gap
+$month	          Extract month (1-12)	Jan = 1, Dec = 12
+$year	            Extract year	2025
+$hour	            Extract hour	0-23
+$dayOfMonth	      Extract day in the month (1–31)	15
+$dayOfYear	      Extract day in the year (1–366)	365
 
 ----------------
 What Are Variables in MongoDB?
@@ -545,13 +529,13 @@ System Variables — Predefined by MongoDB
 User-Defined Variables — Created by you using $let or $setVariable
 
 1. System Variables
-Variable	Description
-$$ROOT	The entire input document
-$$CURRENT	The current level document in pipeline stage
-$$NOW	The current timestamp (when the aggregation runs)
-$$REMOVE	Used to conditionally remove a field
-$$DESCEND	Controls traversal in $redact
-$$CLUSTER_TIME	Cluster timestamp
+Variable	        Description
+$$ROOT	          The entire input document
+$$CURRENT	        The current level document in pipeline stage
+$$NOW	            The current timestamp (when the aggregation runs)
+$$REMOVE	        Used to conditionally remove a field
+$$DESCEND	        Controls traversal in $redact
+$$CLUSTER_TIME	  Cluster timestamp
 
 🔹 2. User-Defined Variables
 You can define custom variables using:
@@ -586,9 +570,6 @@ Referenced Documents (Normalization)
 Definition: One document is associated with one other document.
 
 ✅ Example – User and Profile (Embedded)
-json
-Copy
-Edit
 {
   "_id": 1,
   "name": "Nasim",
@@ -598,9 +579,7 @@ Edit
   }
 }
 ✅ Example – User and Profile (Referenced)
-json
-Copy
-Edit
+
 // users
 { "_id": 1, "name": "Nasim", "profile_id": 101 }
 
@@ -616,9 +595,7 @@ Reference if it is large or accessed separately.
 Definition: One document is related to multiple documents in another collection.
 
 ✅ Example – Customer and Orders (Referenced)
-json
-Copy
-Edit
+
 // customers
 { "_id": 1, "name": "Reja" }
 
@@ -628,9 +605,7 @@ Edit
   { "_id": 1002, "customer_id": 1, "product": "Engine Oil" }
 ]
 ✅ Example – Blog and Comments (Embedded)
-json
-Copy
-Edit
+
 {
   "_id": 1,
   "title": "MongoDB Relationships",
@@ -649,9 +624,7 @@ Reference for larger lists or independent access.
 Definition: Documents in one collection relate to many documents in another collection.
 
 ✅ Example – Students and Courses
-json
-Copy
-Edit
+
 // students
 { "_id": 1, "name": "Nasim", "course_ids": [101, 102] }
 
@@ -660,9 +633,6 @@ Edit
 { "_id": 102, "title": "React.js" }
 You can also use a junction/association collection:
 
-json
-Copy
-Edit
 // student_courses
 { "student_id": 1, "course_id": 101 }
 { "student_id": 1, "course_id": 102 }
@@ -670,9 +640,7 @@ Edit
 MongoDB provides the $lookup stage in aggregation for performing joins.
 
 🔁 $lookup Example
-js
-Copy
-Edit
+
 db.orders.aggregate([
   {
     $lookup: {
@@ -728,9 +696,7 @@ MongoDB is a schema-less NoSQL database, but it allows schema validation using J
 
  Enabling Schema Validation (Example)
 Example: A collection for users with validation:
-js
-Copy
-Edit
+
 db.createCollection("users", {
   validator: {
     $jsonSchema: {
@@ -768,9 +734,6 @@ validationAction	"warn" (logs but allows insert), "error" (rejects invalid data)
 
 
 Update Schema Validator on Existing Collection
-js
-Copy
-Edit
 db.runCommand({
   collMod: "users",
   validator: {
@@ -794,9 +757,6 @@ Update Existing Collection with Validation
 Suppose you already have a collection called cars, and now you want to enforce some validation rules on it.
 
 📌 Example
-js
-Copy
-Edit
 db.runCommand({
   collMod: "cars",
   validator: {
@@ -992,6 +952,1410 @@ Yes! You can assign any value (string, number, UUID) as _id:
 
 db.users.insertOne({ _id: "nasim123", name: "Nasim Reja" });
 
+
+
+❓ Is MongoDB Really Schemaless?
+Short Answer:
+MongoDB is not strictly schemaless, but it is schema-flexible.
+
+✅ What Does “Schemaless” Mean?
+Traditionally, relational databases (like MySQL) require:
+
+Predefined tables
+
+Strict columns and data types
+
+MongoDB, in contrast:
+
+Stores data in documents (BSON format)
+
+Does not require a fixed structure across documents in a collection
+
+👉 So you can insert documents with different shapes/fields.
+
+🔍 Example: Flexible Schema
+js
+Copy
+Edit
+// First document
+{
+  name: "Nasim",
+  age: 23,
+  skills: ["React", "Node"]
+}
+
+// Second document
+{
+  name: "Reja",
+  location: "Kolkata",
+  isActive: true
+}
+✅ Both documents can exist in the same users collection without error.
+
+⚠️ But Why It's Not Truly Schemaless?
+MongoDB allows you to enforce schema validation using:
+
+🔒 Schema Validation Rules
+js
+Copy
+Edit
+db.createCollection("users", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["name", "email"],
+      properties: {
+        name: { bsonType: "string" },
+        email: { bsonType: "string" },
+        age: { bsonType: "int" }
+      }
+    }
+  }
+})
+Now MongoDB rejects any document that doesn't match this schema.
+
+
+
+ ordered Option in insert Command – MongoDB
+In MongoDB, when you insert multiple documents using insertMany(), the ordered option determines how MongoDB handles errors during the operation.
+
+🔹 Syntax:
+js
+Copy
+Edit
+db.collection.insertMany(
+  [doc1, doc2, doc3, ...],
+  { ordered: true | false }
+)
+✅ ordered: true (Default)
+MongoDB inserts documents in order.
+
+If one document fails (e.g., due to duplicate _id), it stops the operation and does not insert the remaining documents.
+
+🔸 Example:
+js
+Copy
+Edit
+db.users.insertMany(
+  [
+    { _id: 1, name: "Nasim" },
+    { _id: 2, name: "Reja" },
+    { _id: 1, name: "DuplicateID" }, // Duplicate _id
+    { _id: 3, name: "Mondal" }
+  ],
+  { ordered: true }
+)
+👉 Only documents with _id: 1 and _id: 2 will be inserted. The operation stops at the error.
+
+✅ ordered: false
+MongoDB inserts all valid documents, ignoring errors.
+
+Errors are reported, but insertion continues for the rest.
+
+🔸 Example:
+js
+Copy
+Edit
+db.users.insertMany(
+  [
+    { _id: 1, name: "Nasim" },
+    { _id: 2, name: "Reja" },
+    { _id: 1, name: "DuplicateID" },
+    { _id: 3, name: "Mondal" }
+  ],
+  { ordered: false }
+)
+👉 _id: 1 and _id: 2 are inserted
+👉 The duplicate _id is skipped
+👉 _id: 3 is still inserted
+
+✅ Use Cases:
+Use Case	Use ordered
+You want strict data integrity	true (default)
+You want to insert as many as possible, even with some errors	false
+
+
+
+Schema Validation in MongoDB
+Although MongoDB is often called “schemaless,” schema validation allows you to enforce structure on documents in a collection using JSON Schema syntax.
+
+🔹 Why Use Schema Validation?
+Prevents invalid or inconsistent data.
+
+Ensures required fields and value types.
+
+Helps maintain data quality and integrity.
+
+🔹 Enabling Validation on a Collection
+You can apply validation rules while creating a collection or modifying an existing one.
+
+✅ Create a Collection with Validation
+js
+Copy
+Edit
+db.createCollection("users", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["name", "email", "age"],
+      properties: {
+        name: {
+          bsonType: "string",
+          description: "must be a string and is required"
+        },
+        email: {
+          bsonType: "string",
+          pattern: "^.+@.+$",
+          description: "must be a valid email"
+        },
+        age: {
+          bsonType: "int",
+          minimum: 18,
+          description: "must be an integer >= 18"
+        }
+      }
+    }
+  },
+  validationLevel: "strict",   // or "moderate"
+  validationAction: "error"    // or "warn"
+})
+✅ Update Validation on Existing Collection
+js
+Copy
+Edit
+db.runCommand({
+  collMod: "users",
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["name"],
+      properties: {
+        name: {
+          bsonType: "string"
+        }
+      }
+    }
+  },
+  validationLevel: "strict",
+  validationAction: "error"
+})
+🔹 Validation Levels
+Level	Behavior
+strict	Validates all inserts and updates (default).
+moderate	Only validates new or updated fields; leaves existing ones alone.
+
+🔹 Validation Actions
+Action	Behavior
+error	Rejects non-compliant documents.
+warn	Logs the warning but allows the insert/update.
+
+✅ Example Insert (Valid)
+js
+Copy
+Edit
+db.users.insertOne({
+  name: "Nasim",
+  email: "nasim@example.com",
+  age: 25
+})
+❌ Example Insert (Invalid)
+js
+Copy
+Edit
+db.users.insertOne({
+  name: "Nasim",
+  email: "not-an-email",
+  age: "twenty"
+})
+🛑 Will throw error if validationAction is "error".
+
+
+
+✅ Write Concern in MongoDB
+Write Concern in MongoDB determines how much acknowledgment you want from the database when performing a write operation like insert, update, or delete.
+
+🔹 Why is Write Concern Important?
+It affects:
+
+Data durability
+
+Fault tolerance
+
+Performance
+
+You choose how many replica set members must confirm the write before it is considered successful.
+
+🔹 Write Concern Options
+Value	Description
+w: 0	No acknowledgment (fire-and-forget). Fastest, but unreliable.
+w: 1	Acknowledged by primary only. Default setting.
+w: "majority"	Acknowledged by majority of replica set members. Safe and reliable.
+w: n	Acknowledged by n replica set members. Custom level.
+
+🔹 Optional Settings
+j: true → Wait for write to be written to the journal (ensures durability).
+
+wtimeout: ms → Time in milliseconds to wait for write concern acknowledgment.
+
+🔹 Examples
+✅ Basic Write Concern (w: 1)
+js
+Copy
+Edit
+db.products.insertOne(
+  { name: "Laptop", price: 55000 },
+  { writeConcern: { w: 1 } }
+)
+✅ Majority Write Concern with Journal
+js
+Copy
+Edit
+db.orders.insertOne(
+  { item: "Phone", qty: 2 },
+  { writeConcern: { w: "majority", j: true, wtimeout: 5000 } }
+)
+🔹 Behavior in Replica Set
+In a replica set, using "majority" ensures that the write is durable even if the primary node crashes immediately after the write.
+
+🔸 Comparison Summary
+Write Concern	Durability	Speed	Use Case
+w: 0	❌ No	⚡ Fast	Logging, caching
+w: 1	✅ Medium	⚡⚡ Good	Default usage
+w: "majority"	✅✅ High	🐢 Slow	Financial, critical data
+w: n	✅ Custom	Varies	Controlled environments
+
+
+
+✅ MongoImport in MongoDB – Import JSON into MongoDB
+mongoimport is a command-line tool used to import data into MongoDB collections from files like .json, .csv, or .tsv.
+
+🔹 Basic Syntax (for JSON)
+bash
+Copy
+Edit
+mongoimport --db <database_name> --collection <collection_name> --file <path_to_json_file> --jsonArray
+🔸 Example:
+Suppose you have a file called cars.json:
+
+json
+Copy
+Edit
+[
+  { "brand": "Toyota", "model": "Camry", "year": 2020 },
+  { "brand": "Honda", "model": "Civic", "year": 2019 }
+]
+✅ Command:
+bash
+Copy
+Edit
+mongoimport --db car_dealership --collection inventory --file cars.json --jsonArray
+
+
+🔹 Options Breakdown:
+Option	Description
+--db	Target database name (e.g., car_dealership)
+--collection	Target collection name (e.g., inventory)
+--file	Path to the JSON file
+--jsonArray	Use this if your file contains a JSON array of documents
+--drop	Drops (deletes) the collection before importing
+--uri	Use if connecting to a remote MongoDB URI
+--mode	insert (default), upsert, or merge
+
+🔸 Import Single JSON Objects (Line-by-Line Format)
+If your file looks like:
+
+json
+Copy
+Edit
+{ "name": "Nasim", "age": 23 }
+{ "name": "Rahul", "age": 25 }
+❌ Don’t use --jsonArray
+✅ Use:
+
+bash
+Copy
+Edit
+mongoimport --db testDB --collection users --file users.json
+🔹 Common Scenarios
+✅ Drop collection and import new data
+
+bash
+Copy
+Edit
+mongoimport --db test --collection users --file users.json --drop --jsonArray
+✅ Connect to remote MongoDB Atlas
+
+bash
+Copy
+Edit
+mongoimport --uri "mongodb+srv://username:password@cluster.mongodb.net/test" \
+--collection users --file users.json --jsonArray
+🔸 Verify Import
+You can check imported data using Mongo shell:
+
+js
+Copy
+Edit
+use car_dealership
+db.inventory.find().pretty()
+
+
+
+✅ Understanding $exists and $type Operators in MongoDB
+🔹 $exists Operator
+Purpose:
+Checks if a field exists (is present) or not in the document.
+
+🔸 Syntax:
+js
+Copy
+Edit
+{ field: { $exists: <boolean> } }
+true → Field exists (regardless of its value)
+
+false → Field does not exist
+
+🔸 Example:
+Given this document:
+
+json
+Copy
+Edit
+{ "_id": 1, "name": "Nasim", "age": 25 }
+✅ Find documents where "age" field exists:
+js
+Copy
+Edit
+db.users.find({ age: { $exists: true } })
+❌ Find documents where "email" field does not exist:
+js
+Copy
+Edit
+db.users.find({ email: { $exists: false } })
+🔹 $type Operator
+Purpose:
+Matches documents where the value of a field is of the specified BSON data type.
+
+🔸 Syntax:
+{ field: { $type: <type> } }
+<type> can be a string (like "string", "number", "bool") or type number (2, 16, etc.)
+
+🔸 Common BSON Data Types:
+Type	Name	Type Number
+"double"	64-bit float	1
+"string"	String	2
+"object"	Embedded Document	3
+"array"	Array	4
+"bool"	Boolean	8
+"date"	Date	9
+"null"	Null	10
+"int"	32-bit int	16
+"long"	64-bit int	18
+
+🔸 Example:
+Given:
+
+{ "_id": 1, "name": "Nasim", "age": 25, "verified": true }
+✅ Find documents where age is a number:
+
+db.users.find({ age: { $type: "int" } })
+✅ Find documents where verified is a boolean:
+
+db.users.find({ verified: { $type: "bool" } })
+✅ Match multiple types:
+
+db.users.find({ age: { $type: ["int", "double"] } })
+🔹 Combine $exists and $type:
+
+db.users.find({
+  email: { $exists: true, $type: "string" }
+})
+✅ This will return documents where the email field exists and its value is a string.
+
+
+
+✅ Evaluation Operators in MongoDB
+Evaluation operators in MongoDB allow you to evaluate documents based on certain conditions such as expressions, patterns (like regex), or script logic.
+
+🔹 List of Common Evaluation Operators:
+Operator	Description
+$expr	Allows use of aggregation expressions in the query language.
+$mod	Performs a modulo operation to match numeric values.
+$regex	Matches strings using regular expressions.
+$text	Performs text search on string content.
+$where	Executes a JavaScript expression for custom matching logic.
+
+🔸 1. $expr
+✅ Allows querying using aggregation expressions.
+
+Example: Match documents where price > discount:
+
+db.products.find({
+  $expr: { $gt: ["$price", "$discount"] }
+})
+🔸 2. $mod
+✅ Matches documents where the value of a field modulo a divisor is a specific remainder.
+
+Syntax:
+
+{ field: { $mod: [divisor, remainder] } }
+Example: Find users whose age is divisible by 5:
+
+db.users.find({
+  age: { $mod: [5, 0] }
+})
+🔸 3. $regex
+✅ Performs pattern matching using regular expressions.
+
+Example: Find users whose name starts with "Na":
+
+db.users.find({
+  name: { $regex: "^Na" }
+})
+You can also use $options for case-insensitive matching:
+
+db.users.find({
+  name: { $regex: "^na", $options: "i" }
+})
+🔸 4. $text
+✅ Performs a text search on fields indexed with a text index.
+
+Step 1: Create a text index:
+
+db.articles.createIndex({ title: "text", content: "text" })
+Step 2: Search using $text:
+
+db.articles.find({
+  $text: { $search: "mongodb index" }
+})
+🔸 Use "\"exact phrase\"" for exact matching, or - to exclude terms.
+
+🔸 5. $where
+✅ Allows use of JavaScript expressions to filter documents.
+
+⚠️ Warning: Slower and not recommended for large-scale production queries.
+
+Example: Find users whose age is greater than 25:
+
+db.users.find({
+  $where: "this.age > 25"
+})
+📌 Summary Table:
+Operator	Use Case Example
+$expr	Compare two fields
+$mod	Match numbers divisible by a value
+$regex	Pattern/text matching
+$text	Full-text search
+$where	Custom JavaScript condition
+
+
+
+✅ Querying Arrays in MongoDB
+MongoDB provides powerful operators to query arrays stored in documents. Arrays can be queried to match individual elements, elements with specific conditions, or even arrays of embedded documents.
+
+🔹 Basic Example
+json
+Copy
+Edit
+{
+  _id: 1,
+  name: "Toyota",
+  colors: ["red", "blue", "white"]
+}
+🔸 1. Match exact element in an array
+Find documents where "colors" contains "red":
+
+db.cars.find({ colors: "red" })
+✅ This matches if at least one element is "red".
+
+🔸 2. Match array with exact value/sequence
+Find cars with colors exactly ["red", "blue"] in order:
+
+db.cars.find({ colors: ["red", "blue"] })
+⚠️ This matches only if the array exactly matches the order and number of elements.
+
+🔸 3. $all — Match all specified values, in any order
+
+db.cars.find({ colors: { $all: ["red", "white"] } })
+✅ Returns documents that contain both "red" and "white" anywhere in the array.
+
+🔸 4. $elemMatch — Match elements based on multiple conditions
+Example Dataset:
+json
+Copy
+Edit
+{
+  name: "Tesla",
+  services: [
+    { type: "repair", cost: 500 },
+    { type: "paint", cost: 1000 }
+  ]
+}
+Query: Find cars with a service of type "repair" and cost > 400:
+js
+Copy
+Edit
+db.cars.find({
+  services: {
+    $elemMatch: {
+      type: "repair",
+      cost: { $gt: 400 }
+    }
+  }
+})
+✅ $elemMatch is necessary when multiple conditions apply to the same array element.
+
+🔸 5. Match array index values
+Example: Find cars where second color (index 1) is "blue":
+db.cars.find({
+  "colors.1": "blue"
+})
+🔸 6. Query based on array length
+MongoDB doesn’t have a direct $size query operator in match stage of aggregation, but you can use $size in find:
+
+db.cars.find({
+  colors: { $size: 3 }
+})
+✅ Finds documents where the colors array has exactly 3 elements.
+
+📌 Summary of Operators
+Operator	Description
+field: value	Matches any element in array
+$all	All values must be in the array
+$elemMatch	Match elements with multiple conditions
+field.index	Match value at specific index
+$size	Match array of specific length
+
+
+
+
+Effortlessly Sort Your MongoDB Documents: Tips & Tricks
+Sorting in MongoDB is simple but powerful when used smartly. You can control the order of documents returned by your queries using the .sort() method — perfect for organizing data by name, date, price, etc.
+
+🔸 1. Basic Sorting with .sort()
+js
+Copy
+Edit
+db.collection.find().sort({ field: 1 })   // Ascending
+db.collection.find().sort({ field: -1 })  // Descending
+✅ Example:
+
+Sort users by name in ascending order:
+
+db.users.find().sort({ name: 1 })
+Sort users by age in descending order:
+
+db.users.find().sort({ age: -1 })
+🔸 2. Sort by Multiple Fields
+You can sort by more than one field. MongoDB will sort by the first field, and use the second field to break ties.
+
+db.users.find().sort({ age: 1, name: -1 })
+➡️ Sorts by age ascending, and if ages are the same, then by name descending.
+
+🔸 3. Sorting with Limit and Skip
+Combine sorting with limit() and skip() for pagination:
+
+db.products.find().sort({ price: -1 }).skip(10).limit(5)
+✅ Fetch products sorted by highest price, skipping the top 10, and returning the next 5.
+
+🔸 4. Sorting by Date
+Assume documents like:
+
+{ name: "Order1", createdAt: ISODate("2025-07-12T10:00:00Z") }
+Sort newest to oldest:
+
+db.orders.find().sort({ createdAt: -1 })
+🔸 5. Sorting Embedded Fields
+For nested documents:
+
+{ name: "John", address: { city: "Delhi", pin: 110001 } }
+Sort by city:
+
+db.users.find().sort({ "address.city": 1 })
+🔸 6. Indexing for Faster Sorting
+If you sort frequently on a field, create an index:
+
+db.users.createIndex({ age: 1 })
+This boosts performance — especially for large collections.
+
+🧠 Pro Tips
+✅ Use .explain("executionStats") to see if sort uses index:
+
+db.users.find().sort({ age: 1 }).explain("executionStats")
+✅ Avoid sorting large result sets without indexes — it consumes memory and may hit SORT_MEMORY_LIMIT.
+
+🛠 Summary
+Task	                      Command Example
+Ascending sort	            sort({ field: 1 })
+Descending sort	            sort({ field: -1 })
+Sort by multiple fields	    sort({ age: 1, name: -1 })
+Combine with pagination	    sort(...).skip(...).limit(...)
+Sort by nested field	      sort({ "address.city": 1 })
+Improve with index	        createIndex({ field: 1 })
+
+
+
+--------------------
+
+# Advanced Update ( $inc, $min, $max, $mul, $unset, $rename & Upsert in MongoDB )
+
+1. $inc (Increment a Value)
+Increases a numeric field by a specified value.
+
+db.users.updateOne(
+  { name: "Nasim" },
+  { $inc: { age: 1 } }
+)
+➡️ Increments the age field by 1.
+
+🔧 2. $mul (Multiply a Value)
+Multiplies the value of a field by a number.
+
+db.products.updateOne(
+  { name: "Laptop" },
+  { $mul: { price: 1.1 } }
+)
+➡️ Increases price by 10%.
+
+🔧 3. $min (Set Value If Lower)
+Updates the field only if the new value is lower than the existing one.
+
+db.students.updateOne(
+  { name: "Ali" },
+  { $min: { score: 85 } }
+)
+➡️ Only updates score if the current value is greater than 85.
+
+🔧 4. $max (Set Value If Higher)
+Updates the field only if the new value is greater than the existing one.
+
+db.students.updateOne(
+  { name: "Ali" },
+  { $max: { score: 90 } }
+)
+➡️ Only updates score if the current value is less than 90.
+
+🔧 5. $unset (Remove a Field)
+Deletes a field from the document.
+
+db.users.updateOne(
+  { name: "Nasim" },
+  { $unset: { address: "" } }
+)
+➡️ Removes the address field.
+
+🔧 6. $rename (Rename a Field)
+Renames a field.
+
+db.users.updateOne(
+  {},
+  { $rename: { "dob": "birthDate" } }
+)
+➡️ Renames dob to birthDate.
+
+⚡ 7. Upsert (Update or Insert if Not Exists)
+If no document matches the filter, a new document is inserted with the given values.
+
+db.users.updateOne(
+  { name: "Rohit" },
+  {
+    $set: { age: 25, city: "Mumbai" }
+  },
+  { upsert: true }
+)
+➡️ If "Rohit" exists → update it.
+➡️ If not → insert a new document with that data.
+
+✅ Summary Table
+Operator	Purpose	Example
+$inc	Increment value	$inc: { age: 1 }
+$mul	Multiply value	$mul: { price: 1.1 }
+$min	Set value only if new is smaller	$min: { score: 85 }
+$max	Set value only if new is higher	$max: { score: 90 }
+$unset	Remove a field	$unset: { address: "" }
+$rename	Rename a field	$rename: { "dob": "birthDate" }
+upsert	Insert if no match found	{ upsert: true }
+
+
+
+Updating Nested Arrays in MongoDB
+To update elements inside an array of embedded documents, MongoDB provides dot notation and positional operator ($).
+
+✅ Example Document
+json
+Copy
+Edit
+{
+  _id: 1,
+  name: "Nasim",
+  subjects: [
+    { name: "Math", score: 80 },
+    { name: "English", score: 70 }
+  ]
+}
+🛠️ Update the score of subject "Math":
+
+db.students.updateOne(
+  { name: "Nasim", "subjects.name": "Math" },
+  { $set: { "subjects.$.score": 90 } }
+)
+🔍 $.score updates the first matched element in the subjects array.
+
+📌 Array Operators
+1. $push → Add Element to Array
+
+db.users.updateOne(
+  { name: "Nasim" },
+  { $push: { hobbies: "reading" } }
+)
+➡️ Adds "reading" to the hobbies array.
+
+2. $addToSet → Add Only If Not Exists (No Duplicates)
+
+db.users.updateOne(
+  { name: "Nasim" },
+  { $addToSet: { hobbies: "cricket" } }
+)
+➡️ Adds "cricket" only if it's not already in the hobbies array.
+
+3. $pull → Remove Matching Element(s)
+
+db.users.updateOne(
+  { name: "Nasim" },
+  { $pull: { hobbies: "gaming" } }
+)
+➡️ Removes "gaming" from the hobbies array.
+
+Can also remove objects:
+
+db.students.updateOne(
+  { name: "Nasim" },
+  { $pull: { subjects: { name: "English" } } }
+)
+➡️ Removes the object with name: "English" from the subjects array.
+
+4. $pop → Remove First or Last Element
+
+db.users.updateOne(
+  { name: "Nasim" },
+  { $pop: { hobbies: -1 } }  // -1 = first, 1 = last
+)
+➡️ Removes the first item from hobbies.
+
+🔁 Using $push with $each, $sort, $slice, and $position
+
+db.users.updateOne(
+  { name: "Nasim" },
+  {
+    $push: {
+      hobbies: {
+        $each: ["cycling", "painting"],
+        $sort: 1,         // Sort alphabetically
+        $slice: -3,       // Keep last 3 elements
+        $position: 0      // Insert at beginning
+      }
+    }
+  }
+)
+✅ Summary Table
+Operator	            Action	          Example
+$push	                Add element to array	$push: { arr: "item" }
+$addToSet	Add only if not exists	$addToSet: { arr: "item" }
+$pull	Remove element(s) matching value	$pull: { arr: "item" }
+$pop	Remove first/last item	$pop: { arr: -1 or 1 }
+
+
+// $bucket operator
+The $bucket operator in MongoDB is used in the Aggregation Pipeline to group documents into buckets (ranges) based on a specified field’s value—much like a histogram.
+
+🔍 Syntax
+js
+Copy
+Edit
+{
+  $bucket: {
+    groupBy: <expression>,     // Required. Field or expression to group by
+    boundaries: [ <lower1>, <lower2>, ..., <upper> ],  // Required. Must be sorted.
+    default: <bucket_label>,   // Optional. Label for values outside boundaries
+    output: {                  // Optional. Output fields
+      <field1>: { <accumulator>: <expression> },
+      ...
+    }
+  }
+}
+📘 Example Dataset
+js
+Copy
+Edit
+db.students.insertMany([
+  { name: "Nasim", marks: 45 },
+  { name: "Riya", marks: 78 },
+  { name: "Sam", marks: 89 },
+  { name: "Asha", marks: 32 },
+  { name: "Raj", marks: 92 },
+  { name: "Tina", marks: 64 },
+  { name: "Alex", marks: 55 }
+])
+📊 Example: Group Students by Marks
+js
+Copy
+Edit
+db.students.aggregate([
+  {
+    $bucket: {
+      groupBy: "$marks",
+      boundaries: [0, 50, 70, 100],  // [0-49], [50-69], [70-99]
+      default: "Invalid Marks",
+      output: {
+        count: { $sum: 1 },
+        students: { $push: "$name" }
+      }
+    }
+  }
+])
+🧾 Output:
+json
+Copy
+Edit
+[
+  {
+    "_id": 0,
+    "count": 2,
+    "students": ["Nasim", "Asha"]
+  },
+  {
+    "_id": 50,
+    "count": 2,
+    "students": ["Alex", "Tina"]
+  },
+  {
+    "_id": 70,
+    "count": 2,
+    "students": ["Riya", "Sam"]
+  },
+  {
+    "_id": "Invalid Marks",
+    "count": 1,
+    "students": ["Raj"]   // if Raj had marks > 100 or < 0
+  }
+]
+✅ When to Use $bucket
+Creating histograms of numerical data
+
+Binning exam scores, age groups, prices, etc.
+
+When range-based grouping is more useful than exact-match $group
+
+🆚 Difference Between $bucket vs $bucketAuto
+Feature	      $bucket	          $bucketAuto
+Boundaries	  Manually defined	Automatically calculated
+Flexibility	  More control	    Easier for unknown ranges
+Output group  sizes	May vary	  Tries to keep bucket sizes similar
+
+
+# $lookup in MongoDB – How to Perform Joins Between Collections
+
+In MongoDB, joins between collections can be done using the $lookup stage in the Aggregation Pipeline. It’s MongoDB’s way of mimicking SQL-style joins.
+
+📌 Syntax of $lookup
+
+{
+  $lookup: {
+    from: "<foreign_collection>",
+    localField: "<field_in_current_collection>",
+    foreignField: "<field_in_foreign_collection>",
+    as: "<output_array_field>"
+  }
+}
+📘 Example Scenario
+Let’s say we have two collections:
+
+orders Collection:
+
+[
+  { _id: 1, customer_id: 101, total: 500 },
+  { _id: 2, customer_id: 102, total: 300 }
+]
+customers Collection:
+
+[
+  { _id: 101, name: "Nasim", city: "Kolkata" },
+  { _id: 102, name: "Riya", city: "Delhi" }
+]
+🔄 Join Using $lookup
+
+db.orders.aggregate([
+  {
+    $lookup: {
+      from: "customers",
+      localField: "customer_id",
+      foreignField: "_id",
+      as: "customer_info"
+    }
+  }
+])
+🧾 Output:
+
+[
+  {
+    _id: 1,
+    customer_id: 101,
+    total: 500,
+    customer_info: [
+      {
+        _id: 101,
+        name: "Nasim",
+        city: "Kolkata"
+      }
+    ]
+  },
+  {
+    _id: 2,
+    customer_id: 102,
+    total: 300,
+    customer_info: [
+      {
+        _id: 102,
+        name: "Riya",
+        city: "Delhi"
+      }
+    ]
+  }
+]
+💡 Optional: Unwind the Joined Result
+If you want to flatten the customer_info array into an object:
+
+db.orders.aggregate([
+  {
+    $lookup: {
+      from: "customers",
+      localField: "customer_id",
+      foreignField: "_id",
+      as: "customer_info"
+    }
+  },
+  { $unwind: "$customer_info" }
+])
+✅ Benefits of $lookup
+Performs left outer joins
+
+Works within aggregation
+
+Supports joins on embedded fields
+
+Works for same-database collections
+
+🛠 Advanced $lookup (with pipeline)
+You can use $lookup with a pipeline (MongoDB 3.6+):
+
+{
+  $lookup: {
+    from: "customers",
+    let: { cust_id: "$customer_id" },
+    pipeline: [
+      { $match: { $expr: { $eq: ["$_id", "$$cust_id"] } } },
+      { $project: { name: 1, city: 1 } }
+    ],
+    as: "customer_info"
+  }
+}
+📌 Notes:
+$lookup only works between collections in the same database.
+Indexes on foreignField improve performance.
+Result is an array, even if only one match is found (unless you unwind it).
+
+
+📦 Capped Collection in MongoDB
+A Capped Collection is a special type of fixed-size collection in MongoDB that maintains the insertion order and automatically overwrites the oldest documents when the specified size limit is reached.
+
+✅ Key Features of Capped Collections
+Feature	Description
+🔒 Fixed Size	You specify a maximum size (in bytes) when creating it.
+🔁 Circular	Oldest documents are overwritten when the cap is reached.
+📥 Insert Order	Documents are stored in the order they are inserted.
+⚡ Fast	High-performance for insert and read operations (like logs).
+❌ No Delete/Update	Documents can't be removed or resized. Only inserts allowed.
+
+📘 When to Use Capped Collections
+Logging systems (like logs, events)
+
+Real-time data (sensor readings, stock ticks)
+
+Chat messages with size limit
+
+🛠️ Create a Capped Collection
+js
+Copy
+Edit
+db.createCollection("logs", {
+  capped: true,
+  size: 10240,  // Size in bytes (10 KB here)
+  max: 1000     // (Optional) Max number of documents
+})
+📤 Insert into a Capped Collection
+js
+Copy
+Edit
+db.logs.insertOne({ message: "System started", ts: new Date() })
+📥 Read from a Capped Collection
+js
+Copy
+Edit
+db.logs.find()
+🔄 Capped Collection Behavior
+If the collection is full:
+
+New documents are still inserted
+
+Oldest documents are automatically deleted
+
+⚠️ Limitations
+You cannot remove or update size-changing fields in documents.
+
+You cannot convert a normal collection to capped directly (but you can do a workaround).
+
+Ideal only for append-only data.
+
+🔁 Convert Normal to Capped (Workaround)
+js
+Copy
+Edit
+// Step 1: Copy existing data
+db.normal.find().forEach(function(doc) {
+  db.temp.insert(doc);
+});
+
+// Step 2: Drop old collection and create capped one
+db.normal.drop();
+db.createCollection("normal", { capped: true, size: 10000 });
+
+// Step 3: Copy data back (only latest that fits will stay)
+db.temp.find().forEach(function(doc) {
+  db.normal.insert(doc);
+});
+📌 Summary
+Capped collections are high-performance collections.
+
+Great for use cases like logs, metrics, sensor data, etc.
+
+They overwrite old data when full, so you never run out of space.
+
+-----------
+Mastering MongoDB: The Complete Guide to Authentication (RBAC)
+MongoDB secures access to your data using authentication, authorization, and Role-Based Access Control (RBAC). This guide helps you understand and implement MongoDB's authentication and RBAC mechanisms effectively.
+
+🧩 1. What Is Authentication in MongoDB?
+Authentication is the process of verifying the identity of a client (user or application) trying to connect to the database.
+
+MongoDB supports multiple authentication mechanisms:
+
+SCRAM-SHA-1 / SCRAM-SHA-256 (default)
+
+x.509 certificates
+
+LDAP
+
+Kerberos
+
+🧷 2. Enabling Authentication
+By default, MongoDB does not enable authentication. To enforce authentication:
+
+🛠️ Edit the MongoDB Configuration File
+yaml
+Copy
+Edit
+# /etc/mongod.conf
+security:
+  authorization: "enabled"
+Then restart MongoDB:
+
+bash
+Copy
+Edit
+sudo systemctl restart mongod
+👑 3. What Is RBAC (Role-Based Access Control)?
+RBAC lets you control what users can do and what resources they can access.
+
+Users are assigned roles, and each role has a set of privileges (actions on resources).
+
+🧱 4. MongoDB Built-in Roles
+Role	Database	Description
+read	Any	Read-only access
+readWrite	Any	Read and write access
+dbAdmin	Any	Schema-related operations
+userAdmin	Any	Manage users and roles
+clusterAdmin	admin	Cluster-wide administration
+root	admin	Superuser (all permissions)
+
+👤 5. Creating the First Admin User
+You must create a user before enabling authentication.
+
+🔸 Step 1: Start MongoDB without authentication:
+bash
+Copy
+Edit
+mongod --auth disabled
+🔸 Step 2: Create an admin user:
+js
+Copy
+Edit
+use admin
+
+db.createUser({
+  user: "admin",
+  pwd: "strongpassword",
+  roles: [ { role: "root", db: "admin" } ]
+})
+🔸 Step 3: Restart MongoDB with authentication:
+bash
+Copy
+Edit
+mongod --auth
+🔑 6. Creating Users with Specific Roles
+✅ Example: Create a readWrite user on a specific DB
+js
+Copy
+Edit
+use yourDatabase
+
+db.createUser({
+  user: "nasim",
+  pwd: "yourpassword",
+  roles: [
+    { role: "readWrite", db: "yourDatabase" }
+  ]
+})
+🔐 7. Logging in with Authentication
+bash
+Copy
+Edit
+mongo -u "nasim" -p "yourpassword" --authenticationDatabase "yourDatabase"
+🧩 8. Custom Roles in MongoDB
+You can create custom roles with specific privileges.
+
+🛠️ Example:
+js
+Copy
+Edit
+use yourDatabase
+
+db.createRole({
+  role: "customReader",
+  privileges: [
+    {
+      resource: { db: "yourDatabase", collection: "orders" },
+      actions: [ "find" ]
+    }
+  ],
+  roles: []
+})
+Then assign it:
+
+js
+Copy
+Edit
+db.createUser({
+  user: "customUser",
+  pwd: "password123",
+  roles: [ { role: "customReader", db: "yourDatabase" } ]
+})
+📋 9. Viewing Users and Roles
+js
+Copy
+Edit
+// View all users
+use admin
+db.getUsers()
+
+// View roles
+db.getRoles({ showPrivileges: true })
+🧼 10. Deleting Users
+js
+Copy
+Edit
+db.dropUser("nasim")
+🧠 Summary
+Concept	Description
+Authentication	Verifies identity of users/applications
+RBAC	Assigns privileges based on roles
+Built-in Roles	Predefined roles for common use-cases
+Custom Roles	Fine-grained control over access
+Enable Auth	Modify mongod.conf and restart
+
+
+MongoDB Replication & Sharding Overview
+MongoDB offers replication and sharding to provide high availability and horizontal scalability, respectively.
+
+✅ Replication in MongoDB
+Replication provides data redundancy and high availability using Replica Sets.
+
+🔁 What is a Replica Set?
+A replica set is a group of MongoDB servers that maintain the same data set. One member is primary, others are secondary.
+
+📦 Key Components:
+Primary: Handles all write operations.
+
+Secondary: Replicates data from the primary.
+
+Arbiter (optional): Participates in elections but doesn’t store data.
+
+🔄 Automatic Failover:
+If the primary goes down:
+
+One of the secondaries is elected as the new primary.
+
+Ensures high availability without manual intervention.
+
+🔍 Replica Set Example:
+javascript
+Copy
+Edit
+rs.initiate({
+  _id: "rs0",
+  members: [
+    { _id: 0, host: "localhost:27017" },
+    { _id: 1, host: "localhost:27018" },
+    { _id: 2, host: "localhost:27019" }
+  ]
+})
+🔐 Benefits:
+High Availability
+
+Data Redundancy
+
+Read scalability (via read preferences)
+
+🔃 Sharding in MongoDB
+Sharding is the process of distributing data across multiple servers (shards) to support horizontal scaling.
+
+🔧 Components:
+Shard: A MongoDB server that holds a subset of the sharded data.
+
+Config Server: Stores metadata and cluster configuration.
+
+Query Router (mongos): Routes client queries to the correct shard.
+
+📊 How Sharding Works:
+Data is partitioned using a shard key.
+
+The shard key determines how the documents are distributed across shards.
+
+MongoDB splits data into chunks and distributes them.
+
+🔑 Example Shard Key:
+bash
+Copy
+Edit
+sh.enableSharding("car_dealership")
+sh.shardCollection("car_dealership.cars", { model: 1 })
+⚠️ Choosing a Good Shard Key:
+Cardinality should be high.
+
+Distribution should be even.
+
+Query patterns should be considered.
+
+🔄 Replication vs. Sharding
+Feature	Replication	Sharding
+Purpose	High availability	Horizontal scaling
+Data	Copies of same data	Partitioned data
+Components	Primary, Secondary, Arbiter	Shards, Config Server, Mongos
+Use Case	Fault tolerance, backup	Large datasets, high load
+
+Let me know if you want examples of replication setup, shard key design, or mongos configuration.
+
+
+
+
+
+
+
+
+
+You said:
+Transactions in MongoDB
+
+
+ChatGPT said:
+🔄 Transactions in MongoDB: A Complete Guide
+MongoDB supports ACID-compliant transactions, allowing you to perform multiple operations across multiple documents and collections atomically, much like relational databases.
+
+🧾 What is a Transaction?
+A transaction is a sequence of operations that are:
+
+Atomic: All or nothing.
+
+Consistent: Data remains valid after transaction.
+
+Isolated: Transactions do not affect each other.
+
+Durable: Changes are saved permanently once committed.
+
+✅ When to Use Transactions?
+Use transactions when:
+
+You need to update multiple documents in a single atomic operation.
+
+You're working with multi-document updates across multiple collections.
+
+You need strict consistency, such as banking, inventory, or order systems.
+
+⚙️ Basic Syntax (Using MongoDB Shell or Node.js)
+🔹 Start, Commit, Abort Example:
+javascript
+Copy
+Edit
+const session = db.getMongo().startSession();
+session.startTransaction();
+
+try {
+  const usersCollection = session.getDatabase("shop").users;
+  const ordersCollection = session.getDatabase("shop").orders;
+
+  usersCollection.updateOne({ _id: 1 }, { $inc: { balance: -100 } });
+  ordersCollection.insertOne({ userId: 1, item: "Laptop", amount: 100 });
+
+  session.commitTransaction(); // ✅ Everything is saved
+} catch (e) {
+  session.abortTransaction();  // ❌ Everything is rolled back
+} finally {
+  session.endSession();
+}
+⚠️ Requirements and Limitations
+Requirement	Description
+MongoDB Version	Must be 4.0+ for replica sets, 4.2+ for sharded
+Deployment	Must be in a replica set or sharded cluster
+Write Concern	Should be "majority" for durability
+Transaction Timeout	Default is 60 seconds
+In-Memory Limit	~16MB of uncommitted changes
+
+🧪 Multi-Document ACID Example (Node.js/Mongoose)
+javascript
+Copy
+Edit
+const session = await mongoose.startSession();
+session.startTransaction();
+
+try {
+  await User.updateOne({ _id: userId }, { $inc: { balance: -50 } }, { session });
+  await Order.create([{ userId, productId, amount: 50 }], { session });
+
+  await session.commitTransaction();
+} catch (error) {
+  await session.abortTransaction();
+}
+session.endSession();
+🆚 MongoDB Without Transactions
+MongoDB operations are atomic on the document level. If you're working with a single document, you usually don’t need transactions.
+
+💡 Best Practices
+Keep transactions short-lived to avoid locking.
+
+Use retry logic for transient errors.
+
+Avoid using transactions if atomic single-document updates suffice (simpler & faster).
+
+Always monitor performance using mongostat and mongotop.
 
 > no sql
 >MongoDB
