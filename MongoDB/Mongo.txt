@@ -2,6 +2,7 @@ C:\Users\User>mongosh
 ----------------Create Database-------
 test> show dbs / 
 ---------------------Drop Database---------
+
 test> use myTestDatabase
 switched to db myTestDatabase
 
@@ -16,6 +17,8 @@ View All Documents in Teacher - db.Teacher.find()
 --------------------------------Create Collection-------------
 db.createCollection("mycollection")
 { "ok" : 1 }
+
+show collection
 --You simply start inserting data. When you use methods like insertOne() or insertMany() on a collection name that doesn't yet exist within your selected database, MongoDB will create that collection for you.--->
 
 test> db.student.insertOne({name: "Raju", age: 25}) // Insert Document in student Collection
@@ -338,6 +341,10 @@ car_dealership> db.cars.updateOne( { model: "Honda" }, { $push: { features: "Hea
   modifiedCount: 0,
   upsertedCount: 0
 }
+
+To add a new element to an existing array field in a document.
+If the field doesn't exist, it creates the field as a new array and adds the element. 
+
 --------updateMany-----
 db.cars.updateMany(
   { fuel_type: "Diesel" },
